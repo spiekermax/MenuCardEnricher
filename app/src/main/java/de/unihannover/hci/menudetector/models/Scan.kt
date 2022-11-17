@@ -1,4 +1,4 @@
-package de.unihannover.hci.menudetector.model
+package de.unihannover.hci.menudetector.models
 
 import java.nio.ByteBuffer
 
