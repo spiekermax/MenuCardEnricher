@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/tempNavigationFragment">
+    <fragment
+        android:id="@+id/tempNavigationFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.TempNavigationFragment"
+        android:label="TempNavigationFragment">
+        <action
+            android:id="@+id/action_tempNavigationFragment_to_scanFragment"
+            app:destination="@id/scanFragment" />
+        <action
+            android:id="@+id/action_tempNavigationFragment_to_dishFragment"
+            app:destination="@id/dishFragment" />
+        <action
+            android:id="@+id/action_tempNavigationFragment_to_previewFragment"
+            app:destination="@id/previewFragment" />
+        <action
+            android:id="@+id/action_tempNavigationFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_tempNavigationFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
+        <action
+            android:id="@+id/action_tempNavigationFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/scanFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.ScanFragment"
+        android:label="ScanFragment" />
+    <fragment
+        android:id="@+id/dishFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.DishFragment"
+        android:label="DishFragment" />
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.MenuFragment"
+        android:label="MenuFragment" />
+    <fragment
+        android:id="@+id/orderFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.OrderFragment"
+        android:label="OrderFragment" />
+    <fragment
+        android:id="@+id/previewFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.PreviewFragment"
+        android:label="PreviewFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.SettingsFragment"
+        android:label="SettingsFragment" />
+</navigation>
