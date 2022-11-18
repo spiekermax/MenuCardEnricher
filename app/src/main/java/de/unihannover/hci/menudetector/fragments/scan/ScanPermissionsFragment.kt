@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 
-// Google Material
+// Google
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 
@@ -60,7 +60,13 @@ class ScanPermissionsFragment : Fragment(R.layout.fragment_scan_permissions) {
         super.onViewCreated(view, savedInstanceState)
 
         val button: MaterialButton = view.findViewById(R.id.button)
-        button.setOnClickListener { requestPermissionsManually() }
+        button.setOnClickListener {
+            if (hasPermissions()) {
+                navigateToCamera()
+            } else {
+                requestPermissionsManually()
+            }
+        }
     }
 
 

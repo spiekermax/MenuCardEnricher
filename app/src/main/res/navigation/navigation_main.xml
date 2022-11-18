@@ -75,7 +75,17 @@
     <fragment
         android:id="@+id/scanCameraFragment"
         android:name="de.unihannover.hci.menudetector.fragments.scan.ScanCameraFragment"
-        android:label="Scan" />
+        android:label="Scan menu">
+        <action
+            android:id="@+id/action_scanCameraFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
+        <action
+            android:id="@+id/action_scanCameraFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_scanCameraFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"
@@ -89,10 +99,6 @@
         <action
             android:id="@+id/action_scanPermissionsFragment_to_scanFragment"
             app:destination="@id/scanCameraFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
             app:popUpTo="@id/scanPermissionsFragment"
             app:popUpToInclusive="true" />
     </fragment>
