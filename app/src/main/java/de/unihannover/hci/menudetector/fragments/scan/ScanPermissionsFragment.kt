@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -18,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 
 // Google Material
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
 
 // Internal dependencies
 import de.unihannover.hci.menudetector.R
@@ -67,12 +67,17 @@ class ScanPermissionsFragment : Fragment(R.layout.fragment_scan_permissions) {
     /* EVENT HANDLERS */
 
     private fun onPermissionsGranted() {
-        Toast.makeText(context, "Permissions granted", Toast.LENGTH_LONG).show()
+        Snackbar.make(requireView(), "Permissions granted", Snackbar.LENGTH_LONG)
+            .setAction("Dismiss") {}
+            .show()
+
         navigateToCamera()
     }
 
     private fun onPermissionsDenied() {
-        Toast.makeText(context, "Permissions denied", Toast.LENGTH_LONG).show()
+        Snackbar.make(requireView(), "Permissions denied", Snackbar.LENGTH_LONG)
+            .setAction("Dismiss") {}
+            .show()
     }
 
 
