@@ -1,46 +1,54 @@
 package de.unihannover.hci.menudetector.fragments
 
+// Android
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+
+// Google Material
 import com.google.android.material.button.MaterialButton
+
+// Internal dependencies
 import de.unihannover.hci.menudetector.R
+
 
 class TempNavigationFragment : Fragment(R.layout.fragment_temp_navigation) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val navController: NavController = findNavController()
+
         val dishButton: MaterialButton = view.findViewById(R.id.button_dish)
-        val menuButton: MaterialButton = view.findViewById(R.id.button_menu)
-        val orderButton: MaterialButton = view.findViewById(R.id.button_order)
-        val previewButton: MaterialButton = view.findViewById(R.id.button_preview)
-        val scanButton: MaterialButton = view.findViewById(R.id.button_scan)
-        val settingsButton: MaterialButton = view.findViewById(R.id.button_settings)
-
         dishButton.setOnClickListener {
-            findNavController().navigate(R.id.action_tempNavigationFragment_to_dishFragment)
+            navController.navigate(R.id.action_tempNavigationFragment_to_dishFragment)
         }
 
+        val menuButton: MaterialButton = view.findViewById(R.id.button_menu)
         menuButton.setOnClickListener {
-            findNavController().navigate(R.id.action_tempNavigationFragment_to_menuFragment)
+            navController.navigate(R.id.action_tempNavigationFragment_to_menuFragment)
         }
 
+        val orderButton: MaterialButton = view.findViewById(R.id.button_order)
         orderButton.setOnClickListener {
-            findNavController().navigate(R.id.action_tempNavigationFragment_to_orderFragment)
+            navController.navigate(R.id.action_tempNavigationFragment_to_orderFragment)
         }
 
+        val previewButton: MaterialButton = view.findViewById(R.id.button_preview)
         previewButton.setOnClickListener {
-            findNavController().navigate(R.id.action_tempNavigationFragment_to_previewFragment)
+            navController.navigate(R.id.action_tempNavigationFragment_to_previewFragment)
         }
 
+        val scanButton: MaterialButton = view.findViewById(R.id.button_scan)
         scanButton.setOnClickListener {
-            findNavController().navigate(R.id.action_tempNavigationFragment_to_scanFragment)
+            navController.navigate(R.id.action_tempNavigationFragment_to_scanFragment)
         }
 
+        val settingsButton: MaterialButton = view.findViewById(R.id.button_settings)
         settingsButton.setOnClickListener {
-            findNavController().navigate(R.id.action_tempNavigationFragment_to_settingsFragment)
+            navController.navigate(R.id.action_tempNavigationFragment_to_settingsFragment)
         }
     }
 
