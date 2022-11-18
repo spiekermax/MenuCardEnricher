@@ -11,13 +11,6 @@
         android:name="de.unihannover.hci.menudetector.fragments.TempNavigationFragment"
         android:label="Temporary navigation">
         <action
-            android:id="@+id/action_tempNavigationFragment_to_scanFragment"
-            app:destination="@id/scanFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
-        <action
             android:id="@+id/action_tempNavigationFragment_to_dishFragment"
             app:destination="@id/dishFragment"
             app:enterAnim="@anim/slide_in_right"
@@ -52,6 +45,11 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_tempNavigationFragment_to_scanPermissionsFragment"
+            app:destination="@id/scanPermissionsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@android:anim/fade_in" />
     </fragment>
 
     <fragment
@@ -75,13 +73,28 @@
         android:label="Preview" />
 
     <fragment
-        android:id="@+id/scanFragment"
-        android:name="de.unihannover.hci.menudetector.fragments.ScanFragment"
+        android:id="@+id/scanCameraFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.scan.ScanCameraFragment"
         android:label="Scan" />
 
     <fragment
         android:id="@+id/settingsFragment"
         android:name="de.unihannover.hci.menudetector.fragments.SettingsFragment"
         android:label="Settings" />
+
+    <fragment
+        android:id="@+id/scanPermissionsFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.scan.ScanPermissionsFragment"
+        android:label="Permissions missing">
+        <action
+            android:id="@+id/action_scanPermissionsFragment_to_scanFragment"
+            app:destination="@id/scanCameraFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/scanPermissionsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>
