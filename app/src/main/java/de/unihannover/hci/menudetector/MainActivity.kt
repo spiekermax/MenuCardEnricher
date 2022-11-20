@@ -22,5 +22,6 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         val toolbar: MaterialToolbar = findViewById(R.id.toolbar)
         toolbar.setupWithNavController(navController, appBarConfiguration)
+        setSupportActionBar(toolbar)
     }
 }
