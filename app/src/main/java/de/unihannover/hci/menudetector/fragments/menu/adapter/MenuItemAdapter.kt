@@ -13,24 +13,36 @@ class MenuItemAdapter(private val dataSet: List<Dish>) :
     RecyclerView.Adapter<MenuItemAdapter.ViewHolder>() {
 
     var itemClickListener: ((Dish) -> Unit)? = null
-    var addToOrdersClickListener: ((Dish) -> Unit)? = null
+    var addToOrdersClickListener: ((TextView, Dish) -> Unit)? = null
+    var removeFromOrdersClickListener: ((TextView, Dish) -> Unit)? = null
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
         val textViewTitle: TextView
         val textViewPrice: TextView
+        private val dishCounter: TextView
         private val addToOrdersButton: ImageButton
+        private val removeFromOrdersButton: ImageButton
 
         init {
+
             textViewTitle = view.findViewById(R.id.dish_title)
             textViewPrice = view.findViewById(R.id.dish_price)
+            dishCounter = view.findViewById(R.id.counter)
             addToOrdersButton = view.findViewById(R.id.add_to_orders)
+            removeFromOrdersButton = view.findViewById(R.id.remove_from_orders)
 
             view.setOnClickListener {
                 itemClickListener?.invoke(dataSet[adapterPosition])
             }
 
             addToOrdersButton.setOnClickListener {
-                addToOrdersClickListener?.invoke(dataSet[adapterPosition])
+                addToOrdersClickListener?.invoke(dishCounter, dataSet[adapterPosition])
+            }
+
+            removeFromOrdersButton.setOnClickListener {
+                removeFromOrdersClickListener?.invoke(dishCounter, dataSet[adapterPosition])
+
             }
         }
     }

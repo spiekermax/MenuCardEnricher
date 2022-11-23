@@ -9,7 +9,7 @@
     android:focusable="true"
     android:foreground="?selectableItemBackground"
     app:cardCornerRadius="14dp"
-    app:cardElevation="2dp">
+    app:cardElevation="15dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,29 +17,28 @@
         android:orientation="vertical">
 
         <TextView
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/dish_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:textAppearance="?attr/textAppearanceHeadline6" />
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            app:layout_constraintTop_toBottomOf="@id/dish_title"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/dish_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:autoSizeTextType="uniform"
             android:padding="16dp"
+            android:textAppearance="?attr/textAppearanceHeadline6"
             android:textSize="16sp"
-            android:textAppearance="?attr/textAppearanceHeadline6" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dish_title" />
 
         <ImageButton
             android:id="@+id/add_to_orders"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -48,10 +47,41 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@null"
             android:src="@drawable/ic_add_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="?android:attr/textColorSecondary"/>
+
+
+        <TextView
+            android:id="@+id/counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="13dp"
+            android:autoSizeTextType="uniform"
+            android:text="0"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/add_to_orders" />
+
+        <ImageButton
+            android:id="@+id/remove_from_orders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_remove_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/counter"
             app:tint="?android:attr/textColorSecondary">
-
-
         </ImageButton>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
