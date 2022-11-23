@@ -43,7 +43,7 @@ class TempNavigationFragment : Fragment(R.layout.fragment_temp_navigation) {
 
         val scanButton: MaterialButton = view.findViewById(R.id.button_scan)
         scanButton.setOnClickListener {
-            navController.navigate(R.id.action_tempNavigationFragment_to_scanFragment)
+            navController.navigate(R.id.action_tempNavigationFragment_to_scanPermissionsFragment)
         }
 
         val settingsButton: MaterialButton = view.findViewById(R.id.button_settings)
