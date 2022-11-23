@@ -1,9 +1,14 @@
 package de.unihannover.hci.menudetector.fragments.scan
 
 // Android
+
+// Google
+
+// Internal dependencies
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -12,12 +17,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-
-// Google
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.common.util.concurrent.ListenableFuture
-
-// Internal dependencies
 import de.unihannover.hci.menudetector.R
 
 
@@ -46,6 +47,18 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         bindViewListeners(view)
 
         startCameraPreview()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        (activity as AppCompatActivity?)?.supportActionBar?.hide()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        (activity as AppCompatActivity?)?.supportActionBar?.show()
     }
 
 
