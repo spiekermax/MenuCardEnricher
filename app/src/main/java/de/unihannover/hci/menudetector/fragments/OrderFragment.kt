@@ -19,6 +19,12 @@ import de.unihannover.hci.menudetector.models.OrderItem
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import java.nio.ByteBuffer
 
+
+/**
+ * TODO:
+ * - Total sum sticky footer
+ * - Text-to-speech
+ */
 class OrderFragment : Fragment(R.layout.fragment_order) {
 
     private val viewModel by activityViewModels<MainActivityViewModel>()

@@ -3,7 +3,6 @@ package de.unihannover.hci.menudetector.fragments
 // Android
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -19,6 +18,12 @@ import de.unihannover.hci.menudetector.models.DishDetail
 // TODO: Integrate actual button images
 
 
+/**
+ * TODO:
+ * - Add dish details to incoming dishes without details field set
+ * - Show image from dish details and other information
+ * - Optional: Description
+ */
 class DishFragment : Fragment(R.layout.fragment_dish) {
 
     private lateinit var navController: NavController

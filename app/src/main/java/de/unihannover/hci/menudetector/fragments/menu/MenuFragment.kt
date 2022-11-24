@@ -22,6 +22,12 @@ import de.unihannover.hci.menudetector.fragments.menu.adapter.MenuItemAdapter
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 
+/**
+ * TODO:
+ * - Add navigation
+ * - Update order based on interaction with list items
+ * - When clicking on item, navigate to details with corresponding data
+ */
 class MenuFragment : Fragment(R.layout.fragment_menu) {
 
     private lateinit var navController: NavController

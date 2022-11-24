@@ -22,6 +22,12 @@ import com.google.common.util.concurrent.ListenableFuture
 import de.unihannover.hci.menudetector.R
 
 
+/**
+ * TODO:
+ * - When clicking photo button, navigate to menu
+ * - Capture actual image and prepare for ML analysis
+ * - Adapt view models so that they are observable
+ */
 class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
     /* ATTRIBUTES */
