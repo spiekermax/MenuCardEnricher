@@ -60,7 +60,17 @@
     <fragment
         android:id="@+id/menuFragment"
         android:name="de.unihannover.hci.menudetector.fragments.menu.MenuFragment"
-        android:label="Menu" />
+        android:label="Menu" >
+        <action
+            android:id="@+id/action_menuFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_scanPermissionsFragment"
+            app:destination="@id/scanPermissionsFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_dishFragment"
+            app:destination="@id/dishFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/orderFragment"
