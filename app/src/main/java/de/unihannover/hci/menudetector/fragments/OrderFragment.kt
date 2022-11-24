@@ -1,13 +1,13 @@
 package de.unihannover.hci.menudetector.fragments
 
 
-
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.unihannover.hci.menudetector.R
@@ -16,12 +16,16 @@ import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.models.DishDetail
 import de.unihannover.hci.menudetector.models.Order
 import de.unihannover.hci.menudetector.models.OrderItem
+import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import java.nio.ByteBuffer
 
 class OrderFragment : Fragment(R.layout.fragment_order) {
 
+    private val viewModel by activityViewModels<MainActivityViewModel>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        /*
         //val orderListView = view.findViewById<ListView>(R.id.order_listview)
         val dish1 = Dish("Flafel", 55.0, DishDetail("Homos", null, null, null))
         val dish2 = Dish("Shish", 100.0, DishDetail("Chicken", null, null, null))
@@ -37,9 +41,10 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
             orderitem1,orderitem2,orderitem3, orderitem4, orderitem5
         )
         val order = Order(orderItems)
+                 */
         //val orderDishesTitles = orderItems.map { it.dish.name }.toTypedArray()
 
-        val orderAdapter = OrderAdapter(orderItems)
+        val orderAdapter = OrderAdapter(viewModel.state.order!!.dishes.toMutableList())
         val orderItemsView = view.findViewById<RecyclerView>(R.id.orderItemsView)
         orderItemsView.layoutManager = LinearLayoutManager(requireContext())
         orderItemsView.adapter = orderAdapter
@@ -47,11 +52,10 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         //orderListView.adapter = listAdapter
 
 
-      /*  orderListView.setOnItemClickListener { parent, view, position, id ->
-            val movieTitle = listAdapter.getItemAtPosition(position)
-            //Toast.makeText(this@ OrderFragment, movieTitle, Toast.LENGTH_SHORT).show()
-        }*/
-
+        /*  orderListView.setOnItemClickListener { parent, view, position, id ->
+              val movieTitle = listAdapter.getItemAtPosition(position)
+              //Toast.makeText(this@ OrderFragment, movieTitle, Toast.LENGTH_SHORT).show()
+          }*/
 
 
     }

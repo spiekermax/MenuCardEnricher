@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -19,10 +20,12 @@ import androidx.recyclerview.widget.RecyclerView
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.fragments.menu.adapter.MenuItemAdapter
 import de.unihannover.hci.menudetector.models.Dish
+import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 
 class MenuFragment : Fragment(R.layout.fragment_menu) {
 
     private lateinit var navController: NavController
+    private val viewModel by activityViewModels<MainActivityViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,18 +39,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
         //Daten initialisieren
 
-        val d0 = Dish("Eis", 1.99, null)
-        val d1 = Dish("Nudeln", 3.99, null)
-        val d2 = Dish("Kartoffeln", 6.99, null)
-        val d3 = Dish("Brot", 2.99, null)
-        val d4 = Dish("Bohnen", 4.99, null)
-        val d5 = Dish("Spinat", 2.95, null)
-        val d6 = Dish("Schnitzel", 12.99, null)
-        val d7 = Dish("Pfannkuchen", 5.99, null)
-        val d8 = Dish("Suppe", 6.23, null)
-        val d9 = Dish("Currywurst", 6.96, null)
-
-        val dishList = listOf(d0, d1, d2, d3, d4, d5, d6, d7, d8, d9)
+        val dishList = viewModel.state.menu!!.dishes
 
         val addMenuSitefab: View = view.findViewById(R.id.addSite)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)

@@ -7,5 +7,5 @@ import de.unihannover.hci.menudetector.models.Order
 
 data class MainActivityState(
     val menu: Menu? = null,
-    val orders: List<Order>? = null,
+    val order: Order? = null,
 )
