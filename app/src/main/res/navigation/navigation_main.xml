@@ -82,6 +82,10 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="de.unihannover.hci.menudetector.fragments.SettingsFragment"
-        android:label="Settings" />
+        android:label="Settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_scanFragment"
+            app:destination="@id/scanFragment" />
+    </fragment>
 
 </navigation>
