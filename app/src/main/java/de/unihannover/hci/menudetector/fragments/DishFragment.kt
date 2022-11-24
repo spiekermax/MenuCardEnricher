@@ -4,10 +4,12 @@ package de.unihannover.hci.menudetector.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // Internal dependencies
 import de.unihannover.hci.menudetector.R
@@ -38,13 +40,13 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
 
         initDish()
 
-        view.findViewById<Button>(R.id.button_back).setOnClickListener {
+        view.findViewById<ImageButton>(R.id.button_back).setOnClickListener {
             navController.popBackStack()
         }
-        view.findViewById<Button>(R.id.button_order).setOnClickListener {
+        view.findViewById<ImageButton>(R.id.button_order).setOnClickListener {
             navController.navigate(R.id.orderFragment)
         }
-        view.findViewById<Button>(R.id.button_add).setOnClickListener {
+        view.findViewById<FloatingActionButton>(R.id.button_add).setOnClickListener {
             // TODO: Implement
             // it.animate().rotation(180F)
         }
