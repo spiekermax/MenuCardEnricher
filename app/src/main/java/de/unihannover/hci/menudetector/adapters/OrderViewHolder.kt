@@ -17,7 +17,6 @@ class OrderViewHolder(private val itemView:View):RecyclerView.ViewHolder(itemVie
     val del_button:Button = itemView.findViewById(R.id.delete_dish)
     val sayit_button:Button = itemView.findViewById(R.id.say_it)
     val disch_img:ImageView = itemView.findViewById(R.id.dish_pic)
-    val total:TextView = itemView.findViewById(R.id.total)
 
 
 

@@ -38,7 +38,6 @@ class OrderAdapter(private val orderitems:MutableList<OrderItem>):
                 {
                     total+= (orderitem.qty * orderitem.dish.price)
                 }
-                holder.total.text = total.toString()
             }
             override fun beforeTextChanged(s: CharSequence, start: Int,
                                            count: Int, after: Int) {
