@@ -73,6 +73,26 @@
         android:label="Preview" />
 
     <fragment
+        android:id="@+id/settingsFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.SettingsFragment"
+        android:label="Settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_scanFragment"
+            app:destination="@id/scanPermissionsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/scanPermissionsFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.scan.ScanPermissionsFragment"
+        android:label="Permissions missing">
+        <action
+            android:id="@+id/action_scanPermissionsFragment_to_scanFragment"
+            app:destination="@id/scanCameraFragment"
+            app:popUpTo="@id/scanPermissionsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
         android:id="@+id/scanCameraFragment"
         android:name="de.unihannover.hci.menudetector.fragments.scan.ScanCameraFragment"
         android:label="Scan menu">
@@ -85,26 +105,6 @@
         <action
             android:id="@+id/action_scanCameraFragment_to_menuFragment"
             app:destination="@id/menuFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="de.unihannover.hci.menudetector.fragments.SettingsFragment"
-        android:label="Settings" >
-        <action
-            android:id="@+id/action_settingsFragment_to_scanFragment"
-            app:destination="@id/scanFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/scanPermissionsFragment"
-        android:name="de.unihannover.hci.menudetector.fragments.scan.ScanPermissionsFragment"
-        android:label="Permissions missing">
-        <action
-            android:id="@+id/action_scanPermissionsFragment_to_scanFragment"
-            app:destination="@id/scanCameraFragment"
-            app:popUpTo="@id/scanPermissionsFragment"
-            app:popUpToInclusive="true" />
     </fragment>
 
 </navigation>
