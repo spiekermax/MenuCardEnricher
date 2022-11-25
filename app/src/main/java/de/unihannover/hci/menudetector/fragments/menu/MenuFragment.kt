@@ -14,12 +14,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 // Internal dependencies
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.fragments.menu.adapter.MenuItemAdapter
-import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 
 /**
@@ -47,18 +47,23 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
         val dishList = viewModel.state.menu!!.dishes
 
-        val addMenuSitefab: View = view.findViewById(R.id.addSite)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         val menuAdapter = MenuItemAdapter(dishList)
 
         var dishCountStr: String
         var dishCountInt: Int
 
+        val addMenuSiteButton: FloatingActionButton = view.findViewById(R.id.addMenuSiteButton)
+
+        addMenuSiteButton.setOnClickListener {
+            navController.navigate(R.id.action_menuFragment_to_scanPermissionsFragment)
+        }
+
+
         recyclerView.adapter = menuAdapter
 
         menuAdapter.itemClickListener = {
-            Toast.makeText(requireActivity(), "Show details of dish " + it.name, Toast.LENGTH_SHORT)
-                .show()
+            navController.navigate(R.id.action_menuFragment_to_dishFragment)
         }
 
         menuAdapter.addToOrdersClickListener = { dishCount, dish ->
@@ -87,10 +92,6 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
             ).show()
         }
 
-        addMenuSitefab.setOnClickListener {
-            Toast.makeText(requireActivity(), "Move to Scan Screen", Toast.LENGTH_SHORT).show()
-        }
-
         recyclerView.setHasFixedSize(true)
 
         requireActivity().addMenuProvider(object : MenuProvider {
@@ -100,8 +101,8 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.menu -> {
-                        Toast.makeText(requireActivity(), "Order", Toast.LENGTH_SHORT).show()
+                    R.id.orderButton -> {
+                        navController.navigate(R.id.action_menuFragment_to_orderFragment)
                         true
                     }
                     else -> false

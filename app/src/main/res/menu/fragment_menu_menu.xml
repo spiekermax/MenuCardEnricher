@@ -2,8 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        app:showAsAction="always"
-        android:id="@+id/menu"
-        android:icon="@drawable/ic_order"
-        android:title="Go to order"/>
+        android:id="@+id/orderButton"
+        android:icon="@drawable/ic_order_white"
+        android:title="Go to order"
+        app:iconTint="?android:attr/textColorSecondary"
+        app:showAsAction="always" />
 </menu>
