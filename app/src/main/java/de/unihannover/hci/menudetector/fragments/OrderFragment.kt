@@ -6,6 +6,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+
+// Google
 import com.google.android.material.snackbar.Snackbar
 
 // Internal dependencies
@@ -34,6 +37,7 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = recyclerViewAdapter
+        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         viewModel.orderChanges.observe(viewLifecycleOwner) {
             recyclerViewAdapter.updateItems(it)

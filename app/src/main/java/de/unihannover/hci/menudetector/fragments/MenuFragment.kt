@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 
 // Google
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -61,6 +62,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = recyclerViewAdapter
+        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         viewModel.menuChanges.observe(viewLifecycleOwner) {
             recyclerViewAdapter.updateItems(it)
