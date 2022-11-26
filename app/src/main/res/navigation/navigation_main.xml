@@ -59,7 +59,7 @@
 
     <fragment
         android:id="@+id/menuFragment"
-        android:name="de.unihannover.hci.menudetector.fragments.menu.MenuFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.MenuFragment"
         android:label="Menu" >
         <action
             android:id="@+id/action_menuFragment_to_orderFragment"

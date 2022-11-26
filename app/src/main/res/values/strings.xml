@@ -1,7 +1,3 @@
 <resources>
     <string name="app_name">MenuDetector</string>
-    <string name="food">food</string>
-    <string name="delete">Delete</string>
-    <string name="sayit">Say it</string>
-    <string name="sayorder">Say Order</string>
 </resources>

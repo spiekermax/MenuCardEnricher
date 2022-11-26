@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?selectableItemBackground"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="15dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,16 +19,17 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/dish_title"
+            android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textAppearance="?attr/textAppearanceHeadline6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Banana" />
 
         <TextView
-            android:id="@+id/dish_price"
+            android:id="@+id/text_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
@@ -35,10 +38,11 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dish_title" />
+            app:layout_constraintTop_toBottomOf="@id/text_title"
+            tools:text="0.89€" />
 
         <ImageButton
-            android:id="@+id/add_to_orders"
+            android:id="@+id/button_increment_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -49,11 +53,10 @@
             android:src="@drawable/ic_add_white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:tint="?android:attr/textColorSecondary"/>
-
+            app:tint="?android:attr/textColorSecondary" />
 
         <TextView
-            android:id="@+id/counter"
+            android:id="@+id/text_quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -64,10 +67,10 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/add_to_orders" />
+            app:layout_constraintRight_toLeftOf="@id/button_increment_count" />
 
         <ImageButton
-            android:id="@+id/remove_from_orders"
+            android:id="@+id/button_decrement_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -77,10 +80,8 @@
             android:contentDescription="@null"
             android:src="@drawable/ic_remove_white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/counter"
-            app:tint="?android:attr/textColorSecondary">
-        </ImageButton>
-
+            app:layout_constraintRight_toLeftOf="@id/text_quantity"
+            app:tint="?android:attr/textColorSecondary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
