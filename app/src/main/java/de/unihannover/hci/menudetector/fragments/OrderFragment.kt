@@ -49,12 +49,16 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
         recyclerViewAdapter.incrementCountListener = {
             viewModel.updateDish(it.copy(quantity = it.quantity + 1))
-            Snackbar.make(view, "Added one ${it.name} to order", Snackbar.LENGTH_SHORT).show()
         }
 
         recyclerViewAdapter.decrementCountListener = {
-            viewModel.updateDish(it.copy(quantity = it.quantity - 1))
-            Snackbar.make(view, "Removed one ${it.name} from order", Snackbar.LENGTH_SHORT).show()
+            if (it.quantity > 0) {
+                viewModel.updateDish(it.copy(quantity = it.quantity - 1))
+            } else {
+                Snackbar.make(view, "Quantity cannot be lower than zero", Snackbar.LENGTH_SHORT)
+                    .setAction("Dismiss") {}
+                    .show()
+            }
         }
     }
 }
