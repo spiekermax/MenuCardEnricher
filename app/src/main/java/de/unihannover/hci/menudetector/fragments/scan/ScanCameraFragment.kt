@@ -1,10 +1,6 @@
 package de.unihannover.hci.menudetector.fragments.scan
 
 // Android
-
-// Google
-
-// Internal dependencies
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -17,16 +13,18 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+
+// Google
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.common.util.concurrent.ListenableFuture
+
+// Internal dependencies
 import de.unihannover.hci.menudetector.R
 
 
 /**
  * TODO:
- * - When clicking photo button, navigate to menu
  * - Capture actual image and prepare for ML analysis
- * - Adapt view models so that they are observable
  */
 class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
@@ -86,6 +84,10 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         navController.navigate(R.id.action_scanCameraFragment_to_orderFragment)
     }
 
+    private fun onTakePictureClicked() {
+        navController.navigate(R.id.action_scanCameraFragment_to_previewFragment)
+    }
+
 
     /* METHODS */
 
@@ -105,6 +107,9 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
         val orderButton: FloatingActionButton = view.findViewById(R.id.button_order)
         orderButton.setOnClickListener { onOrderClicked() }
+
+        val takePictureButton: FloatingActionButton = view.findViewById(R.id.button_take_picture)
+        takePictureButton.setOnClickListener { onTakePictureClicked() }
     }
 
     private fun startCameraPreview() {
