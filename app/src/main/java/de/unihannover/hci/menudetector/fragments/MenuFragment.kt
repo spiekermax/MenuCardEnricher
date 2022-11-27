@@ -87,7 +87,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         }
 
         scanFab.setOnClickListener {
-            // TODO: Navigate to scan screen
+            navController.navigate(R.id.action_menuFragment_to_scanPermissionsFragment)
         }
     }
 
@@ -103,7 +103,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.menu -> {
-                        // TODO: Navigate to order screen
+                        navController.navigate(R.id.action_menuFragment_to_orderFragment)
                         true
                     }
                     else -> false
