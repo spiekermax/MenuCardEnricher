@@ -17,6 +17,8 @@ import de.unihannover.hci.menudetector.models.Dish
 
 class RecyclerViewDishAdapter(
     dishes: List<Dish> = listOf(),
+    private val showQuantity: Boolean = true,
+    private val isQuantityEditable: Boolean = true,
 ) : RecyclerView.Adapter<RecyclerViewDishAdapter.ViewHolder>() {
 
     /* ATTRIBUTES */
@@ -53,6 +55,17 @@ class RecyclerViewDishAdapter(
 
             incrementCountButton = view.findViewById(R.id.button_increment_count)
             decrementCountButton = view.findViewById(R.id.button_decrement_count)
+
+            if (!showQuantity) {
+                quantityTextView.visibility = View.GONE
+                incrementCountButton.visibility = View.GONE
+                decrementCountButton.visibility = View.GONE
+            }
+
+            if (!isQuantityEditable) {
+                incrementCountButton.visibility = View.GONE
+                decrementCountButton.visibility = View.GONE
+            }
 
             view.setOnClickListener {
                 clickListener?.invoke(differ.currentList[adapterPosition])

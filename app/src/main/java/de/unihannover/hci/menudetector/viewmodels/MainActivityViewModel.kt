@@ -46,6 +46,8 @@ class MainActivityViewModel : ViewModel() {
             menu.filter { it.quantity > 0 }
         }
 
+    var preview: List<Dish> = listOf()
+
 
     /* METHODS */
 
