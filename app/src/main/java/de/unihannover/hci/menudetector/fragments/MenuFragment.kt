@@ -70,6 +70,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
         recyclerViewAdapter.clickListener = {
             // TODO: Navigate to dish details and pass dish as parameter
+
         }
 
         recyclerViewAdapter.incrementCountListener = {
