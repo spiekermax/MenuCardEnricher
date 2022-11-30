@@ -55,7 +55,13 @@
     <fragment
         android:id="@+id/dishFragment"
         android:name="de.unihannover.hci.menudetector.fragments.DishFragment"
-        android:label="Dish" />
+        android:label="Dish" >
+        <argument
+            android:name="dish"
+            app:argType="de.unihannover.hci.menudetector.models.Dish"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
 
     <fragment
         android:id="@+id/menuFragment"
@@ -69,7 +75,13 @@
             app:destination="@id/scanPermissionsFragment" />
         <action
             android:id="@+id/action_menuFragment_to_dishFragment"
-            app:destination="@id/dishFragment" />
+            app:destination="@id/dishFragment" >
+            <argument
+                android:name="dish"
+                app:argType="de.unihannover.hci.menudetector.models.Dish"
+                app:nullable="true"
+                android:defaultValue="@null" />
+        </action>
     </fragment>
 
     <fragment
