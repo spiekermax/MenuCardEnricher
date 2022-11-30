@@ -11,13 +11,6 @@
         android:name="de.unihannover.hci.menudetector.fragments.TempNavigationFragment"
         android:label="Temporary navigation">
         <action
-            android:id="@+id/action_tempNavigationFragment_to_scanFragment"
-            app:destination="@id/scanFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
-        <action
             android:id="@+id/action_tempNavigationFragment_to_dishFragment"
             app:destination="@id/dishFragment"
             app:enterAnim="@anim/slide_in_right"
@@ -52,6 +45,11 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_tempNavigationFragment_to_scanPermissionsFragment"
+            app:destination="@id/scanPermissionsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@android:anim/fade_in" />
     </fragment>
 
     <fragment
@@ -62,7 +60,17 @@
     <fragment
         android:id="@+id/menuFragment"
         android:name="de.unihannover.hci.menudetector.fragments.MenuFragment"
-        android:label="Menu" />
+        android:label="Menu" >
+        <action
+            android:id="@+id/action_menuFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_scanPermissionsFragment"
+            app:destination="@id/scanPermissionsFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_dishFragment"
+            app:destination="@id/dishFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/orderFragment"
@@ -75,13 +83,38 @@
         android:label="Preview" />
 
     <fragment
-        android:id="@+id/scanFragment"
-        android:name="de.unihannover.hci.menudetector.fragments.ScanFragment"
-        android:label="Scan" />
-
-    <fragment
         android:id="@+id/settingsFragment"
         android:name="de.unihannover.hci.menudetector.fragments.SettingsFragment"
-        android:label="Settings" />
+        android:label="Settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_scanFragment"
+            app:destination="@id/scanPermissionsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/scanPermissionsFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.scan.ScanPermissionsFragment"
+        android:label="Permissions missing">
+        <action
+            android:id="@+id/action_scanPermissionsFragment_to_scanFragment"
+            app:destination="@id/scanCameraFragment"
+            app:popUpTo="@id/scanPermissionsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/scanCameraFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.scan.ScanCameraFragment"
+        android:label="Scan menu">
+        <action
+            android:id="@+id/action_scanCameraFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
+        <action
+            android:id="@+id/action_scanCameraFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_scanCameraFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
+    </fragment>
 
 </navigation>

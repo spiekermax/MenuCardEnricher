@@ -2,7 +2,6 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -64,9 +63,8 @@
             android:adjustViewBounds="true"
             android:cropToPadding="false"
             android:maxHeight="280dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/mock_dishdetails_shoyu" />
-
+            android:scaleType="fitCenter">
+        </ImageView>
         <TextView
             android:id="@+id/text_target_name"
             android:layout_width="match_parent"
