@@ -3,10 +3,12 @@ package de.unihannover.hci.menudetector.fragments
 // Android
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.button.MaterialButton
 
 // Google
 import com.google.android.material.snackbar.Snackbar
@@ -29,11 +31,15 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val sayItButton: MaterialButton = view.findViewById(R.id.button_say_it)
+
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
 
         val order: List<Dish> = viewModel.order
         val recyclerViewAdapter = RecyclerViewDishAdapter(order)
+        val totalOrder: TextView= view.findViewById(R.id.text_total)
+        totalOrder.text = calculateTotal()
 
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = recyclerViewAdapter
@@ -48,17 +54,35 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         }
 
         recyclerViewAdapter.incrementCountListener = {
+            val totalOrder: TextView= view.findViewById(R.id.text_total)
             viewModel.updateDish(it.copy(quantity = it.quantity + 1))
+            totalOrder.text = calculateTotal()
         }
 
         recyclerViewAdapter.decrementCountListener = {
+            val totalOrder: TextView= view.findViewById(R.id.text_total)
             if (it.quantity > 0) {
                 viewModel.updateDish(it.copy(quantity = it.quantity - 1))
+                totalOrder.text = calculateTotal()
             } else {
                 Snackbar.make(view, "Quantity cannot be lower than zero", Snackbar.LENGTH_SHORT)
                     .setAction("Dismiss") {}
                     .show()
+                totalOrder.text = calculateTotal()
             }
         }
+
+        sayItButton.setOnClickListener {
+           //Say the World
+        }
+    }
+
+     private fun calculateTotal(): String {
+        var totalSum = 0.0
+        for (dish in viewModel.order){
+            totalSum+= (dish.quantity * dish.price)
+        }
+        return "Total: "+ String.format("%.2f", totalSum) + "€"
+
     }
 }
