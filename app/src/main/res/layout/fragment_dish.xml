@@ -35,7 +35,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:layout_weight="0"
-            android:textColor="@color/black"
             android:textSize="24sp" />
 
         <TextView
@@ -43,7 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:textColor="@color/black"
             android:textSize="14sp" />
 
         <Space
@@ -64,7 +62,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:textAlignment="viewEnd"
-                android:textColor="@color/black"
                 android:textSize="34sp" />
 
             <TextView
@@ -74,7 +71,6 @@
                 android:layout_marginLeft="16dp"
                 android:layout_weight="0"
                 android:textAlignment="viewEnd"
-                android:textColor="@color/black"
                 android:textSize="20sp" />
 
             <Space
