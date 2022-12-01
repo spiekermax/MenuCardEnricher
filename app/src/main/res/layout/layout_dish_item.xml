@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -55,11 +54,10 @@
             app:tint="?android:attr/textColorSecondary" />
         <ImageButton
             android:id="@+id/button_increment_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@android:dimen/app_icon_size"
+            android:layout_height="@android:dimen/app_icon_size"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@null"
             android:src="@drawable/ic_add_white"
@@ -73,8 +71,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="13dp"
+            android:layout_marginBottom="13dp"
             android:autoSizeTextType="uniform"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:text="0"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -83,11 +83,10 @@
 
         <ImageButton
             android:id="@+id/button_decrement_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@android:dimen/app_icon_size"
+            android:layout_height="@android:dimen/app_icon_size"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@null"
             android:src="@drawable/ic_remove_white"

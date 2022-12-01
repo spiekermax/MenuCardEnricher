@@ -8,8 +8,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -32,7 +32,11 @@ import java.util.*
  * TODO:
  * - Add navigation
  * - Update order based on interaction with list items
- * - When clicking on item, navigate to details with corresponding data
+ * - When clicking on item, navigate to details with corresponding data:
+ *
+ *      private val args: DishFragmentArgs by navArgs()
+ *      val dishExample = args.dish
+ *      view?.findViewById<TextView>(R.id.text_target_name)?.text = dishExample?.name
  */
 class MenuFragment : Fragment(R.layout.fragment_menu) {
 
@@ -73,6 +77,8 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
         recyclerViewAdapter.clickListener = {
             // TODO: Navigate to dish details and pass dish as parameter
+            val action = MenuFragmentDirections.actionMenuFragmentToDishFragment(it)
+            navController.navigate(action)
         }
 
         recyclerViewAdapter.incrementCountListener = {
@@ -100,7 +106,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         }
 
         scanFab.setOnClickListener {
-            // TODO: Navigate to scan screen
+            navController.navigate(R.id.action_menuFragment_to_scanPermissionsFragment)
         }
     }
 
@@ -116,7 +122,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.menu -> {
-                        // TODO: Navigate to order screen
+                        navController.navigate(R.id.action_menuFragment_to_orderFragment)
                         true
                     }
                     else -> false
