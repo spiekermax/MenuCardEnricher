@@ -19,6 +19,10 @@ import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.models.DishDetails
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import java.net.URL
 
 
@@ -35,44 +39,6 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
 
     private val viewModel by activityViewModels<MainActivityViewModel>()
 
-    private fun fetchGET(urlSpec: String): String {
-        return URL(urlSpec).readText()
-
-        // TODO: 4xx/5xx
-    }
-
-    private fun fetchDetails(dish: Dish) {
-        // TODO: Async?
-
-        val wikiEntry: String = fetchGET("https://de.wikipedia.org/wiki/" + dish.name)
-        var fetchedDescription: String? = """<p>((?!<\/p>)(\s|.))+<\/p>""".toRegex()
-                                          .find(wikiEntry)?.value   // TODO: Improve precision
-        if(fetchedDescription != null) {
-            fetchedDescription = fetchedDescription
-                                 .replace("""<\/?[^>]+>""".toRegex(), "")
-        }
-
-        var fetchedBitmap: Bitmap?
-        val wikiMedia: String = fetchGET("https://commons.wikimedia.org/w/index.php?search=" + dish.name + "&title=Special:MediaSearch&go=Go&type=image")
-        //var fetchedImageSource: String? = """<img class=\"sd-image\"((?!src=\")(\s|.))+src=\"[^"]+\"""".toRegex()
-        //                                  .find(wikiMedia)?.value   // TODO: Improve precision
-        var fetchedImageSource = "https://upload.wikimedia.org/wikipedia/commons/6/6f/5aday_spinach.jpg"    // MOCK
-
-        if(fetchedImageSource == null) {
-            // TODO: Handle fetch error
-            return
-        }
-
-        val `in` = URL(fetchedImageSource).openStream()
-
-        fetchedBitmap = BitmapFactory.decodeStream(`in`)
-
-        dish.details = DishDetails(
-            bitmap = fetchedBitmap,
-            description = fetchedDescription
-        )
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -85,14 +51,16 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
     override fun onResume() {
         super.onResume()
 
-        dish = viewModel.menu.get(5)    // TODO: Get passed index reference
+        dish = viewModel.menu.get(5)    // TODO: Get passed index reference?
 
-        if(dish.details == null) {
-            fetchDetails(dish)
+        updateViewState()
 
-            viewModel.updateDish(dish);
+        CoroutineScope(Dispatchers.Default).launch {
+            fetchDetails()
         }
+    }
 
+    private fun updateViewState() {
         view?.findViewById<TextView>(R.id.text_name)?.setText(dish.name)
         view?.findViewById<TextView>(R.id.text_price)?.setText(dish.price.toString() + " €")    // TODO: Adopt currency
 
@@ -104,9 +72,53 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
         var addButton: FloatingActionButton? = view?.findViewById<FloatingActionButton>(R.id.button_add)
         addButton?.setOnClickListener(null)
         addButton?.setOnClickListener {
-            dish.quantity++
+            viewModel.updateDish(dish.copy(quantity = dish.quantity + 1)); // TODO: How to re-build efficiently?
+        }
+    }
 
-            viewModel.updateDish(dish); // TODO: How to re-build efficiently?
+    private fun fetchGET(urlSpec: String): String {
+        // TODO: 4xx/5xx
+
+        return URL(urlSpec).readText()
+    }
+
+    private suspend fun fetchDetails() {
+        // TODO: Enhance wiki data parser(s)
+        val wikiEntry: CharSequence = fetchGET("https://de.wikipedia.org/wiki/" + dish.name)
+        var fetchedDescription: String? = """<p>((?!<\/p>)(\s|.))+<\/p>""".toRegex()
+            .find(wikiEntry)?.value   // TODO: Improve precision
+        if(fetchedDescription != null) {
+            fetchedDescription = fetchedDescription
+                .replace("""<\/?[^>]+>""".toRegex(), "")
+        }
+
+        val wikiMedia: CharSequence = fetchGET("https://commons.wikimedia.org/w/index.php?search=" + dish.name + "&title=Special:MediaSearch&go=Go&type=image")
+        //var fetchedImageSource: String? = """<img class=\"sd-image\"((?!src=\")(\s|.))+src=\"[^"]+\"""".toRegex()
+        //                                  .find(wikiMedia)?.value   // TODO: Improve precision
+        var fetchedImageSource = "https://upload.wikimedia.org/wikipedia/commons/6/6f/5aday_spinach.jpg"    // MOCK
+
+        var fetchedBitmap: Bitmap? = null
+        if(fetchedImageSource != null) {
+            val `in` = URL(fetchedImageSource).openStream()
+            fetchedBitmap = BitmapFactory.decodeStream(`in`)
+        }
+
+        dish.details = DishDetails(
+            bitmap = fetchedBitmap,
+            description = fetchedDescription
+        )
+
+        MainScope().launch {
+            viewModel.updateDish(
+                dish.copy(
+                    details = DishDetails(
+                        bitmap = fetchedBitmap,
+                        description = fetchedDescription
+                    )
+                )
+            )
+
+            updateViewState()
         }
     }
 
