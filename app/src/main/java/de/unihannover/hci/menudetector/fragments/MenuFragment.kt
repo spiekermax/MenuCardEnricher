@@ -1,5 +1,8 @@
 package de.unihannover.hci.menudetector.fragments
 
+// Java
+import java.util.*
+
 // Android
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
@@ -25,18 +28,12 @@ import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.adapters.RecyclerViewDishAdapter
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
-import java.util.*
 
 
 /**
  * TODO:
- * - Add navigation
- * - Update order based on interaction with list items
- * - When clicking on item, navigate to details with corresponding data:
- *
- *      private val args: DishFragmentArgs by navArgs()
- *      val dishExample = args.dish
- *      view?.findViewById<TextView>(R.id.text_target_name)?.text = dishExample?.name
+ * - Make button bigger
+ * - Make safe args non nullable
  */
 class MenuFragment : Fragment(R.layout.fragment_menu) {
 
@@ -47,7 +44,8 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var scanFab: FloatingActionButton
-    private lateinit var tts : TextToSpeech
+
+    private lateinit var tts: TextToSpeech
 
 
     /* LIFECYCLE */
@@ -76,7 +74,6 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         }
 
         recyclerViewAdapter.clickListener = {
-            // TODO: Navigate to dish details and pass dish as parameter
             val action = MenuFragmentDirections.actionMenuFragmentToDishFragment(it)
             navController.navigate(action)
         }
@@ -94,15 +91,15 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
                     .show()
             }
         }
-        recyclerViewAdapter.sayItListener = {
-            val dishName = it.name
-            tts = TextToSpeech(requireContext(), TextToSpeech.OnInitListener {
-                if(it == TextToSpeech.SUCCESS){
-                    tts.language = Locale.US
-                    tts.setSpeechRate(1.0f)
-                    tts.speak(dishName, TextToSpeech.QUEUE_ADD, null)
-                } })
 
+        recyclerViewAdapter.sayItListener = { it ->
+            val dishName: CharSequence = it.name
+            tts = TextToSpeech(requireContext()) { result ->
+                if (result == TextToSpeech.SUCCESS) {
+                    tts.language = Locale.US
+                    tts.speak(dishName, TextToSpeech.QUEUE_ADD, null, null)
+                }
+            }
         }
 
         scanFab.setOnClickListener {

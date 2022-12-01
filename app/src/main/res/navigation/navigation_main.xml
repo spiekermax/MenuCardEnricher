@@ -11,13 +11,6 @@
         android:name="de.unihannover.hci.menudetector.fragments.TempNavigationFragment"
         android:label="Temporary navigation">
         <action
-            android:id="@+id/action_tempNavigationFragment_to_dishFragment"
-            app:destination="@id/dishFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
-        <action
             android:id="@+id/action_tempNavigationFragment_to_previewFragment"
             app:destination="@id/previewFragment"
             app:enterAnim="@anim/slide_in_right"

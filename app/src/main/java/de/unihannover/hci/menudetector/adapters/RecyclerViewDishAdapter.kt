@@ -47,8 +47,8 @@ class RecyclerViewDishAdapter(
         val quantityTextView: TextView
 
         private val incrementCountButton: ImageButton
-        private val sayItButton: ImageButton
         private val decrementCountButton: ImageButton
+        private val sayItButton: ImageButton
 
         init {
             titleTextView = view.findViewById(R.id.text_title)
