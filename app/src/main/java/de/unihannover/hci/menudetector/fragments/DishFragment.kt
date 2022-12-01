@@ -8,12 +8,15 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
+import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.models.Dish
@@ -39,6 +42,8 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
 
     private val viewModel by activityViewModels<MainActivityViewModel>()
 
+    private val args: DishFragmentArgs by navArgs()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,10 +53,10 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
         navController = findNavController()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        dish = viewModel.menu.get(5)    // TODO: Get passed index reference?
+        dish = args.dish!!
 
         updateViewState()
 
@@ -82,7 +87,9 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
         return URL(urlSpec).readText()
     }
 
-    private suspend fun fetchDetails() {
+    private fun fetchDetails() {
+        Log.d("ASD", "asdasd")
+
         // TODO: Enhance wiki data parser(s)
         val wikiEntry: CharSequence = fetchGET("https://de.wikipedia.org/wiki/" + dish.name)
         var fetchedDescription: String? = """<p>((?!<\/p>)(\s|.))+<\/p>""".toRegex()
@@ -103,12 +110,8 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
             fetchedBitmap = BitmapFactory.decodeStream(`in`)
         }
 
-        dish.details = DishDetails(
-            bitmap = fetchedBitmap,
-            description = fetchedDescription
-        )
-
         MainScope().launch {
+            println(999)
             viewModel.updateDish(
                 dish.copy(
                     details = DishDetails(
@@ -117,6 +120,10 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
                     )
                 )
             )
+
+            dish = viewModel.menu.find {
+                it.id == dish.id
+            }!!
 
             updateViewState()
         }
