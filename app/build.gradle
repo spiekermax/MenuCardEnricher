@@ -60,6 +60,7 @@ dependencies {
 
     implementation "com.google.android.gms:play-services-mlkit-text-recognition:$google_mlkit_version"
     implementation "com.google.android.material:material:$google_material_version"
+    implementation 'com.google.mlkit:translate:17.0.1'
 
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation "androidx.test.ext:junit:1.1.4"
