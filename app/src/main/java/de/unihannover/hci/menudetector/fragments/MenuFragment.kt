@@ -2,6 +2,7 @@ package de.unihannover.hci.menudetector.fragments
 
 // Android
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -24,6 +25,7 @@ import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.adapters.RecyclerViewDishAdapter
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
+import java.util.*
 
 
 /**
@@ -41,6 +43,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var scanFab: FloatingActionButton
+    private lateinit var tts : TextToSpeech
 
 
     /* LIFECYCLE */
@@ -84,6 +87,16 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
                     .setAction("Dismiss") {}
                     .show()
             }
+        }
+        recyclerViewAdapter.sayItListener = {
+            val dishName = it.name
+            tts = TextToSpeech(requireContext(), TextToSpeech.OnInitListener {
+                if(it == TextToSpeech.SUCCESS){
+                    tts.language = Locale.US
+                    tts.setSpeechRate(1.0f)
+                    tts.speak(dishName, TextToSpeech.QUEUE_ADD, null)
+                } })
+
         }
 
         scanFab.setOnClickListener {
