@@ -10,7 +10,7 @@ data class Dish(
     val price: Double,
 
     @IntRange(from = 0)
-    val quantity: Int,
+    var quantity: Int,
 
-    val details: DishDetails? = null,
+    var details: DishDetails? = null,
 )
