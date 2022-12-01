@@ -26,6 +26,7 @@ class RecyclerViewDishAdapter(
     var clickListener: ((Dish) -> Unit)? = null
     var incrementCountListener: ((Dish) -> Unit)? = null
     var decrementCountListener: ((Dish) -> Unit)? = null
+    var sayItListener: ((Dish) -> Unit)? = null
 
     private val differ = AsyncListDiffer(this, object : DiffUtil.ItemCallback<Dish>() {
         override fun areItemsTheSame(oldItem: Dish, newItem: Dish): Boolean {
@@ -46,6 +47,7 @@ class RecyclerViewDishAdapter(
         val quantityTextView: TextView
 
         private val incrementCountButton: ImageButton
+        private val sayItButton: ImageButton
         private val decrementCountButton: ImageButton
 
         init {
@@ -55,6 +57,7 @@ class RecyclerViewDishAdapter(
 
             incrementCountButton = view.findViewById(R.id.button_increment_count)
             decrementCountButton = view.findViewById(R.id.button_decrement_count)
+            sayItButton = view.findViewById(R.id.button_say)
 
             if (!showQuantity) {
                 quantityTextView.visibility = View.GONE
@@ -77,6 +80,10 @@ class RecyclerViewDishAdapter(
 
             decrementCountButton.setOnClickListener {
                 decrementCountListener?.invoke(differ.currentList[adapterPosition])
+            }
+
+            sayItButton.setOnClickListener {
+                sayItListener?.invoke(differ.currentList[adapterPosition])
             }
         }
     }
