@@ -2,6 +2,7 @@ package de.unihannover.hci.menudetector.viewmodels
 
 // Android
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 
@@ -46,14 +47,30 @@ class MainActivityViewModel : ViewModel() {
             menu.filter { it.quantity > 0 }
         }
 
-    var preview: List<Dish> = listOf()
+    private val _preview: MutableLiveData<List<Dish>> = MutableLiveData(listOf())
+
+    var preview: List<Dish>
+        get() = _preview.value!!
+        set(value) {
+            _preview.value = value
+        }
+
+    val previewChanges: LiveData<List<Dish>> = _preview
 
 
     /* METHODS */
 
     fun addDish(dish: Dish) = dishRepository.addDish(dish)
+    fun addDishes(dishes: List<Dish>) = dishRepository.addDishes(dishes)
+    fun findDishById(id: String) = dishRepository.findDishById(id)
+    fun watchDishById(id: String) = dishRepository.watchDishById(id)
     fun putDish(dish: Dish) = dishRepository.putDish(dish)
     fun updateDish(dish: Dish) = dishRepository.updateDish(dish)
     fun removeDish(dish: Dish) = dishRepository.removeDish(dish)
+
+    fun approvePreview() {
+        addDishes(preview)
+        preview = listOf()
+    }
 
 }
