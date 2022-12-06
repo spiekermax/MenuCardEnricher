@@ -17,6 +17,8 @@ import de.unihannover.hci.menudetector.models.Dish
 
 class RecyclerViewDishAdapter(
     dishes: List<Dish> = listOf(),
+    private val showQuantity: Boolean = true,
+    private val isQuantityEditable: Boolean = true,
 ) : RecyclerView.Adapter<RecyclerViewDishAdapter.ViewHolder>() {
 
     /* ATTRIBUTES */
@@ -24,6 +26,7 @@ class RecyclerViewDishAdapter(
     var clickListener: ((Dish) -> Unit)? = null
     var incrementCountListener: ((Dish) -> Unit)? = null
     var decrementCountListener: ((Dish) -> Unit)? = null
+    var sayItListener: ((Dish) -> Unit)? = null
 
     private val differ = AsyncListDiffer(this, object : DiffUtil.ItemCallback<Dish>() {
         override fun areItemsTheSame(oldItem: Dish, newItem: Dish): Boolean {
@@ -45,6 +48,7 @@ class RecyclerViewDishAdapter(
 
         private val incrementCountButton: ImageButton
         private val decrementCountButton: ImageButton
+        private val sayItButton: ImageButton
 
         init {
             titleTextView = view.findViewById(R.id.text_title)
@@ -53,6 +57,18 @@ class RecyclerViewDishAdapter(
 
             incrementCountButton = view.findViewById(R.id.button_increment_count)
             decrementCountButton = view.findViewById(R.id.button_decrement_count)
+            sayItButton = view.findViewById(R.id.button_say)
+
+            if (!showQuantity) {
+                quantityTextView.visibility = View.GONE
+                incrementCountButton.visibility = View.GONE
+                decrementCountButton.visibility = View.GONE
+            }
+
+            if (!isQuantityEditable) {
+                incrementCountButton.visibility = View.GONE
+                decrementCountButton.visibility = View.GONE
+            }
 
             view.setOnClickListener {
                 clickListener?.invoke(differ.currentList[adapterPosition])
@@ -64,6 +80,10 @@ class RecyclerViewDishAdapter(
 
             decrementCountButton.setOnClickListener {
                 decrementCountListener?.invoke(differ.currentList[adapterPosition])
+            }
+
+            sayItButton.setOnClickListener {
+                sayItListener?.invoke(differ.currentList[adapterPosition])
             }
         }
     }

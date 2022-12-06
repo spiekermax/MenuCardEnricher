@@ -11,13 +11,6 @@
         android:name="de.unihannover.hci.menudetector.fragments.TempNavigationFragment"
         android:label="Temporary navigation">
         <action
-            android:id="@+id/action_tempNavigationFragment_to_dishFragment"
-            app:destination="@id/dishFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
-        <action
             android:id="@+id/action_tempNavigationFragment_to_previewFragment"
             app:destination="@id/previewFragment"
             app:enterAnim="@anim/slide_in_right"
@@ -55,12 +48,18 @@
     <fragment
         android:id="@+id/dishFragment"
         android:name="de.unihannover.hci.menudetector.fragments.DishFragment"
-        android:label="Dish" />
+        android:label="Dish" >
+        <argument
+            android:name="dish"
+            app:argType="de.unihannover.hci.menudetector.models.Dish"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
 
     <fragment
         android:id="@+id/menuFragment"
         android:name="de.unihannover.hci.menudetector.fragments.MenuFragment"
-        android:label="Menu" >
+        android:label="Menu">
         <action
             android:id="@+id/action_menuFragment_to_orderFragment"
             app:destination="@id/orderFragment" />
@@ -69,7 +68,13 @@
             app:destination="@id/scanPermissionsFragment" />
         <action
             android:id="@+id/action_menuFragment_to_dishFragment"
-            app:destination="@id/dishFragment" />
+            app:destination="@id/dishFragment" >
+            <argument
+                android:name="dish"
+                app:argType="de.unihannover.hci.menudetector.models.Dish"
+                app:nullable="true"
+                android:defaultValue="@null" />
+        </action>
     </fragment>
 
     <fragment
@@ -80,7 +85,15 @@
     <fragment
         android:id="@+id/previewFragment"
         android:name="de.unihannover.hci.menudetector.fragments.PreviewFragment"
-        android:label="Preview" />
+        android:label="Preview">
+        <action
+            android:id="@+id/action_previewFragment_to_menuFragment"
+            app:destination="@id/menuFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popUpTo="@id/previewFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"
@@ -115,6 +128,9 @@
         <action
             android:id="@+id/action_scanCameraFragment_to_menuFragment"
             app:destination="@id/menuFragment" />
+        <action
+            android:id="@+id/action_scanCameraFragment_to_previewFragment"
+            app:destination="@id/previewFragment" />
     </fragment>
 
 </navigation>
