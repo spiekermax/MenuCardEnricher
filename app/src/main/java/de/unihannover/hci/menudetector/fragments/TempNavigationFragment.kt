@@ -21,7 +21,6 @@ class TempNavigationFragment : Fragment(R.layout.fragment_temp_navigation) {
 
         val navController: NavController = findNavController()
 
-
         val menuButton: MaterialButton = view.findViewById(R.id.button_menu)
         menuButton.setOnClickListener {
             navController.navigate(R.id.action_tempNavigationFragment_to_menuFragment)

@@ -120,9 +120,11 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
     private fun onMenuRecognized(menu: List<Dish>, confidence: Float?) {
         if (isRecognizedMenuApproved) return
+        if (menu.isEmpty()) return
 
         if (confidence == null) return
         if (confidence < CONFIDENCE_THRESHOLD) return
+
         isRecognizedMenuApproved = true
 
         viewModel.preview = menu

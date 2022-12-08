@@ -44,6 +44,32 @@ class DishRepository(dishes: List<Dish> = listOf()) {
     }
 
     /**
+     * Adds all given dishes to the repository.
+     * Throws an exception if any of the dishes already exist.
+     */
+    fun addDishes(dishes: List<Dish>) {
+        val newDishes: MutableMap<String, Dish> = _dishes.value!!.toMutableMap()
+        for (dish in dishes) {
+            newDishes.compute(dish.id) { _, value ->
+                if (value == null) dish
+                else throw IllegalArgumentException("Dish already exists in menu.")
+            }
+        }
+
+        _dishes.value = newDishes.toMap()
+    }
+
+    fun findDishById(id: String): Dish? {
+        return _dishes.value!![id]
+    }
+
+    fun watchDishById(id: String): LiveData<Dish?> {
+        return Transformations.map(_dishes) { dishes ->
+            dishes[id]
+        }
+    }
+
+    /**
      * Adds a dish to the repository if it didn't exist before.
      * Updates the dish if it existed in the repository before.
      */
