@@ -51,9 +51,7 @@
         android:label="Dish" >
         <argument
             android:name="dish"
-            app:argType="de.unihannover.hci.menudetector.models.Dish"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:argType="de.unihannover.hci.menudetector.models.Dish" />
     </fragment>
 
     <fragment
@@ -71,9 +69,7 @@
             app:destination="@id/dishFragment" >
             <argument
                 android:name="dish"
-                app:argType="de.unihannover.hci.menudetector.models.Dish"
-                app:nullable="true"
-                android:defaultValue="@null" />
+                app:argType="de.unihannover.hci.menudetector.models.Dish" />
         </action>
     </fragment>
 
