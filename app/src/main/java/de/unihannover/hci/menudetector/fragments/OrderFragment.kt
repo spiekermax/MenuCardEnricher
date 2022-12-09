@@ -91,7 +91,7 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         }
 
         sayItButton.setOnClickListener {
-            tas.translateAndSpeak(requireContext(), viewModel)
+            tas.translateAndSpeak(requireContext(), viewModel.order)
         }
     }
 
