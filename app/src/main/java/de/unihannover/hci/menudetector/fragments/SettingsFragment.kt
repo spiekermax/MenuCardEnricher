@@ -1,6 +1,8 @@
 package de.unihannover.hci.menudetector.fragments
 
 // Android
+
+// Internal dependencies
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -10,8 +12,9 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-
-// Internal dependencies
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.button.MaterialButton
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 
@@ -30,6 +33,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navController: NavController = findNavController()
 
         val sharedPreferences = activity?.getSharedPreferences("SHARED_PREF",Context.MODE_PRIVATE)
         val editor = sharedPreferences!!.edit()
@@ -88,6 +92,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
 
                 editor.putInt("WEIGHT",position).commit()
             }
+        }
+
+
+        val infoButton: MaterialButton = view.findViewById(R.id.info_btn)
+        infoButton.setOnClickListener {
+            var dialog = InfoDialogFragment()
+            dialog.show(getParentFragmentManager(), "infoDialog")
         }
 
     }
