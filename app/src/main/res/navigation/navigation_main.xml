@@ -98,6 +98,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_scanFragment"
             app:destination="@id/scanPermissionsFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_dialogFragment"
+            app:destination="@id/dialogFragment" />
     </fragment>
 
     <fragment
@@ -128,5 +131,9 @@
             android:id="@+id/action_scanCameraFragment_to_previewFragment"
             app:destination="@id/previewFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/dialogFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.InfoDialogFragment"
+        android:label="DialogFragment" />
 
 </navigation>
