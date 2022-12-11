@@ -3,7 +3,10 @@ package de.unihannover.hci.menudetector.models
 // Android
 import android.os.Parcelable
 import androidx.annotation.IntRange
+
+// Kotlin
 import kotlinx.parcelize.Parcelize
+
 
 @Parcelize
 data class Dish(
