@@ -30,11 +30,6 @@ import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 
 
-/**
- * TODO:
- * - Make button bigger
- * - Make safe args non nullable
- */
 class MenuFragment : Fragment(R.layout.fragment_menu) {
 
     /* ATTRIBUTES */
@@ -46,6 +41,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
     private lateinit var scanFab: FloatingActionButton
 
     private lateinit var tts: TextToSpeech
+
 
 
     /* LIFECYCLE */
@@ -63,7 +59,9 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         bindViews(view)
 
         val menu: List<Dish> = viewModel.menu
-        val recyclerViewAdapter = RecyclerViewDishAdapter(menu)
+        val recyclerViewAdapter = RecyclerViewDishAdapter(menu, showImage = true)
+
+
 
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = recyclerViewAdapter
@@ -74,7 +72,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         }
 
         recyclerViewAdapter.clickListener = {
-            val action = MenuFragmentDirections.actionMenuFragmentToDishFragment(it)
+            val action = MenuFragmentDirections.actionMenuFragmentToDishFragment(it.id)
             navController.navigate(action)
         }
 
