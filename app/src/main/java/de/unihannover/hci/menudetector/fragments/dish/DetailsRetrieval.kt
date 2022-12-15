@@ -10,38 +10,49 @@ class DetailsRetrieval {
 
     companion object {
 
-        private fun conductGET(urlSpec: String): String {
-            var url = URL(urlSpec)
+        private fun parseGET(urlSpec: String, pattern: String): String? {
+            val url = URL(urlSpec)
 
-            return url.readText()
+            val responseText = url.readText()
+
+            val match: String? = pattern
+                .toRegex()
+                .find(responseText)
+                ?.value
+
+            return match
         }
 
-        public fun fetch(dish: Dish): DishDetails {
-            // TODO: Enhance wiki data parser(s)
-            val wikiEntry: CharSequence = conductGET("https://de.wikipedia.org/wiki/" + dish.name)
-            var fetchedDescription: String? = """<p>((?!<\/p>)(\s|.))+<\/p>""".toRegex()
-                .find(wikiEntry)?.value   // TODO: Improve precision
-            if (fetchedDescription != null) {
-                fetchedDescription = fetchedDescription
-                    .replace("""<\/?[^>]+>""".toRegex(), "")
-            }
+        fun fetch(dish: Dish): DishDetails? {
+            val urlSafeName: String = java.net.URLEncoder.encode(dish.name, "utf-8")
 
-            val wikiMedia: CharSequence =
-                conductGET("https://commons.wikimedia.org/w/index.php?search=" + dish.name + "&title=Special:MediaSearch&go=Go&type=image")
-            //var fetchedImageSource: String? = """<img class=\"sd-image\"((?!src=\")(\s|.))+src=\"[^"]+\"""".toRegex()
-            //                                  .find(wikiMedia)?.value   // TODO: Improve precision
-            var fetchedImageSource =
-                "https://upload.wikimedia.org/wikipedia/commons/6/6f/5aday_spinach.jpg"    // MOCK
+            var parsedDescription: String = parseGET(
+                "https://de.wikipedia.org/wiki/" + urlSafeName.replace("""\+""".toRegex(), "_"),
+                """<p>((?!<\/p>)(\s|.))+<\/p>"""
+            )!!
 
-            var fetchedBitmap: Bitmap? = null
-            if (fetchedImageSource != null) {
-                val `in` = URL(fetchedImageSource).openStream()
-                fetchedBitmap = BitmapFactory.decodeStream(`in`)
-            }
+            var parsedBitmap: Bitmap? = null
+            try {
+                val parsedPhotoSource: String = parseGET(
+                    "https://commons.wikimedia.org/w/index.php?search=" + urlSafeName + "&title=Special:MediaSearch&go=Go&type=image",
+                    """<img[^>]+data-src=\"[^"]+\""""
+                )!!
+
+                val photoImageSource: String = parsedPhotoSource
+                    .replace("""^[^"]+\"""".toRegex(), "")
+                    .replace("""\"(.|\s)*$""".toRegex(), "")
+
+                println(photoImageSource)
+                val `in` = URL(photoImageSource).openStream()
+                parsedBitmap = BitmapFactory.decodeStream(`in`)
+            } catch(e: Exception) {}
 
             return DishDetails(
-                bitmap = fetchedBitmap,
-                description = fetchedDescription
+                bitmap = parsedBitmap,
+                description = parsedDescription
+                    .replace("""<\/?[^>]+>""".toRegex(), "")
+                    .replace("""\[\/?[^>]+\]""".toRegex(), "")
+                    .replace("""\(\/?[^>]+\)""".toRegex(), "")
             );
         }
 

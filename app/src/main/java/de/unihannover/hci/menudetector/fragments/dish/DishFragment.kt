@@ -3,6 +3,7 @@ package de.unihannover.hci.menudetector.fragments.dish
 // Android
 
 // Internal dependencies
+import android.content.Context
 import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
@@ -10,12 +11,15 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import de.unihannover.hci.menudetector.MainActivity
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.models.DishDetails
@@ -39,7 +43,7 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
 
     private val viewModel by activityViewModels<MainActivityViewModel>()
 
-    //private val args: DishFragmentArgs by navArgs()
+    private val args: DishFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,15 +57,27 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //dish = args.dish!!
-        dish = viewModel.menu.get(0)
+        //dish = args.dishID
+        dish = viewModel.menu.get(3)
 
         updateViewState()
 
         if(dish.details !== null) return
 
         CoroutineScope(Dispatchers.Default).launch {
-            var details: DishDetails = DetailsRetrieval.fetch(dish)
+            var details: DishDetails?
+            try {
+                details = DetailsRetrieval.fetch(dish)
+            } catch(e: Exception) {
+                MainScope().launch {
+                    Toast.makeText(activity?.applicationContext, "Dish details could not be parsed", Toast.LENGTH_LONG).show()
+                    // TODO: Specify error reason (No network, Bad source, ...)
+
+                    navController.popBackStack();
+                }
+
+                return@launch
+            }
 
             MainScope().launch {
                 viewModel.updateDish(

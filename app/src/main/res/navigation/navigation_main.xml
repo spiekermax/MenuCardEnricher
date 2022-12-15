@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/dishFragment"
-        android:name="de.unihannover.hci.menudetector.fragments.DishFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.dish.DishFragment"
         android:label="Dish" >
         <argument
             android:name="dish"
