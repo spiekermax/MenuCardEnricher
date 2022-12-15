@@ -50,8 +50,8 @@
         android:name="de.unihannover.hci.menudetector.fragments.DishFragment"
         android:label="Dish" >
         <argument
-            android:name="dish"
-            app:argType="de.unihannover.hci.menudetector.models.Dish" />
+            android:name="dishID"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -68,8 +68,8 @@
             android:id="@+id/action_menuFragment_to_dishFragment"
             app:destination="@id/dishFragment" >
             <argument
-                android:name="dish"
-                app:argType="de.unihannover.hci.menudetector.models.Dish" />
+                android:name="dishID"
+                app:argType="string" />
         </action>
     </fragment>
 
