@@ -22,6 +22,7 @@ import com.google.mlkit.nl.translate.TranslatorOptions
 // Internal dependencies
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.adapters.RecyclerViewDishAdapter
+import de.unihannover.hci.menudetector.analyzer.TranslateAndSpeak
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import java.util.*
@@ -36,13 +37,17 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
     private val viewModel by activityViewModels<MainActivityViewModel>()
     private lateinit var tts : TextToSpeech
+
     private lateinit var translatorObject: Translator
+    private  lateinit var tas : TranslateAndSpeak
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sayItButton: MaterialButton = view.findViewById(R.id.button_say_it)
 
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
+        tas = TranslateAndSpeak(Locale.US,Locale.GERMAN)
 
         val order: List<Dish> = viewModel.order
         val recyclerViewAdapter = RecyclerViewDishAdapter(order)
@@ -82,62 +87,11 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
         recyclerViewAdapter.sayItListener = {
             val dishName = it.name
-            tts = TextToSpeech(requireContext(), TextToSpeech.OnInitListener {
-                if(it == TextToSpeech.SUCCESS){
-                    tts.language = Locale.US
-                    tts.setSpeechRate(1.0f)
-                    tts.speak(dishName, TextToSpeech.QUEUE_ADD, null)
-                } })
-
+            tas.speak(requireContext(),dishName)
         }
 
         sayItButton.setOnClickListener {
-            var order = viewModel.order
-            var OrderSentence ="I would like to have "
-            for ((index, dish) in viewModel.order.withIndex()){
-                if(index > 0){
-                    OrderSentence+=" and "
-                }
-                OrderSentence += dish.quantity.toString() + " of " + dish.name
-            }
-            OrderSentence += ". Thank you !!"
-
-
-            // Create a translator:
-            val options = TranslatorOptions.Builder()
-                .setSourceLanguage(TranslateLanguage.ENGLISH)
-                .setTargetLanguage(TranslateLanguage.GERMAN)
-                .build()
-            translatorObject = Translation.getClient(options)
-            var conditions = DownloadConditions.Builder()
-                .requireWifi()
-                .build()
-            translatorObject.downloadModelIfNeeded(conditions)
-                .addOnSuccessListener {
-                    // Model downloaded successfully. Okay to start translating.
-                    // (Set a flag, unhide the translation UI, etc.)
-                }
-                .addOnFailureListener { exception ->
-                    // Model couldn’t be downloaded or other internal error.
-                    // ...
-                }
-
-            translatorObject.translate(OrderSentence)
-                .addOnSuccessListener { translatedText ->
-                    tts = TextToSpeech(requireContext(), TextToSpeech.OnInitListener {
-                        if(it == TextToSpeech.SUCCESS){
-                            tts.language = Locale.GERMAN
-                            tts.setSpeechRate(1.0f)
-                            tts.speak(translatedText, TextToSpeech.QUEUE_ADD, null)
-                        } })
-                }
-                .addOnFailureListener { exception ->
-                    // Error.
-                    // ...
-                }
-
-
-
+            tas.translateAndSpeak(requireContext(), viewModel.order)
         }
     }
 

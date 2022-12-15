@@ -37,8 +37,13 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = recyclerViewAdapter
 
+        viewModel.previewChanges.observe(viewLifecycleOwner) {
+            recyclerViewAdapter.updateItems(it)
+        }
+
         val confirmButton: FloatingActionButton = view.findViewById(R.id.button_confirm)
         confirmButton.setOnClickListener {
+            viewModel.approvePreview()
             findNavController().navigate(R.id.action_previewFragment_to_menuFragment)
         }
     }

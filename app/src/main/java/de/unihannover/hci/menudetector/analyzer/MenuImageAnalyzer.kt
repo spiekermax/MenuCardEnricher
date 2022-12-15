@@ -8,19 +8,24 @@ import androidx.camera.core.ImageProxy
 // Google
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.text.Text.TextBlock
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
 // Internal dependencies
-import de.unihannover.hci.menudetector.models.Dish
-import de.unihannover.hci.menudetector.models.DishBuilder
+import de.unihannover.hci.menudetector.models.image.ImageProperties
+import de.unihannover.hci.menudetector.models.recognition.DishRecognitionResult
+import de.unihannover.hci.menudetector.models.recognition.MenuRecognitionResult
 
 
 class MenuImageAnalyzer(
-    private val menuRecognizedListener: (List<Dish>, Float?) -> Unit,
+    private val imagePropertiesListener: ((ImageProperties) -> Unit)? = null,
+    private val menuRecognizedListener: ((MenuRecognitionResult, Float?) -> Unit)? = null,
 ) : ImageAnalysis.Analyzer {
 
     /* ATTRIBUTES */
+
+    private var hasPropagatedImageProperties = false
 
     private val textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
@@ -32,6 +37,29 @@ class MenuImageAnalyzer(
         imageProxy.image?.let {
             val inputImage = InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees)
             process(inputImage, imageProxy)
+        }
+
+        if (!hasPropagatedImageProperties) {
+            val width: Int
+            val height: Int
+            val rotation: Int = imageProxy.imageInfo.rotationDegrees
+
+            if (rotation == 0 || rotation == 180) {
+                width = imageProxy.width
+                height = imageProxy.height
+            } else {
+                width = imageProxy.height
+                height = imageProxy.width
+            }
+
+            imagePropertiesListener?.invoke(ImageProperties(
+                width,
+                height,
+                rotation,
+                isMirrored = false,
+            ))
+
+            hasPropagatedImageProperties = true
         }
     }
 
@@ -48,10 +76,12 @@ class MenuImageAnalyzer(
     }
 
     private fun parse(text: Text) {
-        val dishes: MutableList<Dish> = mutableListOf()
+        val dishRecognitionResults: MutableList<DishRecognitionResult> = mutableListOf()
         val confidences: MutableList<Float> = mutableListOf()
 
         var price: Double? = null
+        var priceTextBlock: TextBlock? = null
+        val usedTextBlocks: MutableList<TextBlock> = mutableListOf()
         for (textBlock in text.textBlocks) {
             // Calculate confidence
             val confidence: Float = textBlock.lines.fold(0f) { confidence, line ->
@@ -62,11 +92,15 @@ class MenuImageAnalyzer(
             // Assemble dish information
             if (price == null) {
                 price = textBlock.text.toDoubleOrNull() ?: continue
+                priceTextBlock = textBlock
             } else {
                 val name: String = textBlock.text
                 if (name.toDoubleOrNull() == null) {
-                    val dish: Dish = DishBuilder(name, price).build()
-                    dishes.add(dish)
+                    usedTextBlocks.add(textBlock)
+                    usedTextBlocks.add(priceTextBlock!!)
+
+                    val dishRecognitionResult = DishRecognitionResult(name, price)
+                    dishRecognitionResults.add(dishRecognitionResult)
                 }
 
                 price = null
@@ -80,7 +114,10 @@ class MenuImageAnalyzer(
             } / confidences.size
         }
 
-        menuRecognizedListener(dishes, confidence)
+        val usedText = Text(text.text, usedTextBlocks)
+
+        val result = MenuRecognitionResult(usedText, dishRecognitionResults)
+        menuRecognizedListener?.invoke(result, confidence)
     }
 
 }
