@@ -57,8 +57,7 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //dish = args.dishID
-        dish = viewModel.menu.get(3)
+        dish = viewModel.findDishById(args.dishID) ?: throw RuntimeException("Null")
 
         updateViewState()
 
