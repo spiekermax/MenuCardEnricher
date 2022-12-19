@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
@@ -59,10 +58,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
             }
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                Toast.makeText(activity?.applicationContext,"You selected ${adapterView?.getItemAtPosition(position)
-                    .toString()}",Toast.LENGTH_SHORT).show()
-
                 editor.putInt("LANGUAGE",position).commit()
             }
         }
@@ -73,10 +68,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
             }
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                Toast.makeText(activity?.applicationContext,"You selected ${adapterView?.getItemAtPosition(position)
-                    .toString()}",Toast.LENGTH_SHORT).show()
-
                 editor.putInt("CURRENCY",position).commit()
             }
         }
@@ -87,10 +78,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
             }
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                Toast.makeText(activity?.applicationContext,"You selected ${adapterView?.getItemAtPosition(position)
-                    .toString()}",Toast.LENGTH_SHORT).show()
-
                 editor.putInt("WEIGHT",position).commit()
             }
         }
