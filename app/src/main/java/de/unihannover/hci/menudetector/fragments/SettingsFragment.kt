@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import de.unihannover.hci.menudetector.R
+import de.unihannover.hci.menudetector.fragments.info.SettingsInfo
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 
 
@@ -97,7 +98,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
 
         val infoButton: MaterialButton = view.findViewById(R.id.info_btn)
         infoButton.setOnClickListener {
-            var dialog = InfoDialogFragment()
+            var dialog = SettingsInfo()
             dialog.show(getParentFragmentManager(), "infoDialog")
         }
 

@@ -71,6 +71,9 @@
                 android:name="dish"
                 app:argType="de.unihannover.hci.menudetector.models.Dish" />
         </action>
+        <action
+            android:id="@+id/action_menuFragment_to_menuInfo"
+            app:destination="@id/menuInfo" />
     </fragment>
 
     <fragment
@@ -100,7 +103,7 @@
             app:destination="@id/scanPermissionsFragment" />
         <action
             android:id="@+id/action_settingsFragment_to_dialogFragment"
-            app:destination="@id/dialogFragment" />
+            app:destination="@id/SettingsInfo" />
     </fragment>
 
     <fragment
@@ -132,8 +135,16 @@
             app:destination="@id/previewFragment" />
     </fragment>
     <fragment
-        android:id="@+id/dialogFragment"
-        android:name="de.unihannover.hci.menudetector.fragments.InfoDialogFragment"
+        android:id="@+id/SettingsInfo"
+        android:name="de.unihannover.hci.menudetector.fragments.info.SettingsInfo"
         android:label="DialogFragment" />
+    <dialog
+        android:id="@+id/menuInfo"
+        android:name="de.unihannover.hci.menudetector.fragments.info.MenuInfo"
+        android:label="MenuInfo" >
+        <action
+            android:id="@+id/action_menuInfo_to_menuFragment"
+            app:destination="@id/menuFragment" />
+    </dialog>
 
 </navigation>
