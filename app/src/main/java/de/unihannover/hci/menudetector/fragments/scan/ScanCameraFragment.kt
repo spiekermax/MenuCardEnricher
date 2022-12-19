@@ -17,6 +17,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 
@@ -28,28 +29,25 @@ import com.google.common.util.concurrent.ListenableFuture
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.analyzer.MenuImageAnalyzer
 import de.unihannover.hci.menudetector.models.Dish
+import de.unihannover.hci.menudetector.models.image.ImageProperties
+import de.unihannover.hci.menudetector.models.recognition.MenuRecognitionResult
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
+import de.unihannover.hci.menudetector.views.GraphicOverlayView
+import de.unihannover.hci.menudetector.views.graphics.TextOverlayGraphic
 
 
-private const val CONFIDENCE_THRESHOLD = 0.8f
+private const val CONFIDENCE_THRESHOLD: Float = 0.75f
 
-/**
- * Known bugs:
- * 1: No second analysis
- *     Steps to reproduce:
- *         1. Analyze an image with sufficient confidence
- *         2. Approve preview
- *         3. Go back
- *     Expected behaviour: A second scan will be accepted
- *     Actual behaviour: No images will be accepted
- */
 class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
     /* ATTRIBUTES */
 
-    private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
     private lateinit var cameraPreviewView: PreviewView
+    private lateinit var graphicOverlayView: GraphicOverlayView
 
+    private lateinit var takePictureButton: FloatingActionButton
+
+    private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
     private val cameraExecutor: ExecutorService by lazy {
         Executors.newSingleThreadExecutor()
     }
@@ -57,7 +55,7 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
     private lateinit var navController: NavController
     private val viewModel by activityViewModels<MainActivityViewModel>()
 
-    private var isRecognizedMenuApproved = false
+    private val recognizedMenu: MutableLiveData<List<Dish>> = MutableLiveData(listOf())
 
 
     /* LIFECYCLE */
@@ -74,6 +72,8 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         bindViews(view)
         bindViewListeners(view)
 
+        bindListeners()
+
         startCameraPreview()
     }
 
@@ -81,12 +81,16 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         super.onResume()
 
         (activity as AppCompatActivity?)?.supportActionBar?.hide()
+
+        recognizedMenu.value = listOf()
     }
 
     override fun onStop() {
         super.onStop()
 
         (activity as AppCompatActivity?)?.supportActionBar?.show()
+
+        recognizedMenu.value = listOf()
     }
 
     override fun onDestroy() {
@@ -115,20 +119,32 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
     }
 
     private fun onTakePictureClicked() {
+        viewModel.preview = recognizedMenu.value!!
         navController.navigate(R.id.action_scanCameraFragment_to_previewFragment)
     }
 
-    private fun onMenuRecognized(menu: List<Dish>, confidence: Float?) {
-        if (isRecognizedMenuApproved) return
-        if (menu.isEmpty()) return
+    private fun onImagePropertiesChanged(imageProperties: ImageProperties) {
+        graphicOverlayView.setImageSourceInfo(
+            imageWidth = imageProperties.width,
+            imageHeight = imageProperties.height,
+            isFlipped = imageProperties.isMirrored,
+        )
+    }
+
+    private fun onMenuRecognized(menu: MenuRecognitionResult, confidence: Float?) {
+        graphicOverlayView.clear()
 
         if (confidence == null) return
         if (confidence < CONFIDENCE_THRESHOLD) return
 
-        isRecognizedMenuApproved = true
+        graphicOverlayView.add(TextOverlayGraphic(
+            overlay = graphicOverlayView,
+            text = menu.text,
+            shouldGroupTextInBlocks = false,
+            showConfidence = true,
+        ))
 
-        viewModel.preview = menu
-        navController.navigate(R.id.action_scanCameraFragment_to_previewFragment)
+        recognizedMenu.value = menu.toDishes()
     }
 
 
@@ -136,6 +152,9 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
     private fun bindViews(view: View) {
         cameraPreviewView = view.findViewById(R.id.camera_preview)
+        graphicOverlayView = view.findViewById(R.id.graphic_overlay)
+
+        takePictureButton = view.findViewById(R.id.button_take_picture)
     }
 
     private fun bindViewListeners(view: View) {
@@ -151,8 +170,13 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         val orderButton: FloatingActionButton = view.findViewById(R.id.button_order)
         orderButton.setOnClickListener { onOrderClicked() }
 
-        val takePictureButton: FloatingActionButton = view.findViewById(R.id.button_take_picture)
         takePictureButton.setOnClickListener { onTakePictureClicked() }
+    }
+
+    private fun bindListeners() {
+        recognizedMenu.observe(viewLifecycleOwner) {
+            takePictureButton.isEnabled = it.isNotEmpty()
+        }
     }
 
     private fun startCameraPreview() {
@@ -170,9 +194,14 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         preview.setSurfaceProvider(cameraPreviewView.surfaceProvider)
 
         val imageAnalysis: ImageAnalysis = ImageAnalysis.Builder().build()
-        imageAnalysis.setAnalyzer(cameraExecutor, MenuImageAnalyzer { menu, confidence ->
-            onMenuRecognized(menu, confidence)
-        })
+        imageAnalysis.setAnalyzer(cameraExecutor, MenuImageAnalyzer(
+            imagePropertiesListener = { imageProperties ->
+                onImagePropertiesChanged(imageProperties)
+            },
+            menuRecognizedListener = { menu, confidence ->
+                onMenuRecognized(menu, confidence)
+            },
+        ))
 
         val cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
