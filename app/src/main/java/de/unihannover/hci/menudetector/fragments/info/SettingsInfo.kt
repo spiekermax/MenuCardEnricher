@@ -8,7 +8,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import de.unihannover.hci.menudetector.R
 
-class InfoDialogFragment: DialogFragment() {
+class SettingsInfo: DialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
