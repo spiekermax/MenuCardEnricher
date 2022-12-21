@@ -36,8 +36,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/text_title"
-            android:layout_margin="16dp"
-            tools:srcCompat="@mipmap/placeholder" />
+            android:layout_margin="16dp" />
 
 
         <TextView
