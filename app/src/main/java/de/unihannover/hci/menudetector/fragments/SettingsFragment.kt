@@ -5,9 +5,11 @@ package de.unihannover.hci.menudetector.fragments
 // Internal dependencies
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -17,6 +19,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -30,14 +34,22 @@ import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 class SettingsFragment : Fragment(R.layout.fragment_settings){
     private val viewModel by activityViewModels<MainActivityViewModel>()
     lateinit var sharedPreferences: SharedPreferences
+    private var languagesLocalMap: Map<String,Locale> = HashMap<String,Locale>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val navController: NavController = findNavController()
-
-        val sharedPreferences = activity?.getSharedPreferences("SHARED_PREF",Context.MODE_PRIVATE)
+        sharedPreferences = activity?.getSharedPreferences("SHARED_PREF",Context.MODE_PRIVATE)!!
         val editor = sharedPreferences!!.edit()
-        val spLanguageValue = sharedPreferences.getInt("LANGUAGE",0)
+
+        //get Default system Language ans set it as default in app setting
+        val defDeviceLang:String = Locale.getDefault().getDisplayLanguage()
+        val locales: List<Locale> = Locale.getAvailableLocales().asList().distinctBy { it.language}
+        languagesLocalMap = locales.map { it.getDisplayName() to it }.toMap()
+        val positionInLanguageArray = languagesLocalMap.keys.indexOf(defDeviceLang)
+
+        //get the index of choosen dropdownlist item if exist, if not take the device default language
+        val spLanguageValue = sharedPreferences.getInt("LANGUAGE", positionInLanguageArray)
         val spCurrencyValue = sharedPreferences.getInt("CURRENCY",0)
         val spWeightValue = sharedPreferences.getInt("WEIGHT",0)
 
@@ -46,6 +58,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
         val spCurrency: Spinner = view.findViewById(R.id.spCurrency)
         val spWeight: Spinner = view.findViewById(R.id.spWeight)
 
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item, languagesLocalMap.keys.toList())
+
+        spLanguage.adapter = adapter
 
 
         spLanguage.setSelection(spLanguageValue)
@@ -63,6 +80,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
                     .toString()}",Toast.LENGTH_SHORT).show()
 
                 editor.putInt("LANGUAGE",position).commit()
+                editor.putString("LANGUAGE_AS_String", languagesLocalMap.keys.elementAt(position)).commit()
             }
         }
 
