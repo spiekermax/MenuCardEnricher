@@ -11,13 +11,13 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import de.unihannover.hci.menudetector.R
+import de.unihannover.hci.menudetector.fragments.info.SettingsInfo
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import java.util.*
 import kotlin.collections.ArrayList
@@ -75,10 +75,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
             }
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                Toast.makeText(activity?.applicationContext,"You selected ${adapterView?.getItemAtPosition(position)
-                    .toString()}",Toast.LENGTH_SHORT).show()
-
                 editor.putInt("LANGUAGE",position).commit()
                 editor.putString("LANGUAGE_AS_String", languagesLocalMap.keys.elementAt(position)).commit()
             }
@@ -90,10 +86,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
             }
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                Toast.makeText(activity?.applicationContext,"You selected ${adapterView?.getItemAtPosition(position)
-                    .toString()}",Toast.LENGTH_SHORT).show()
-
                 editor.putInt("CURRENCY",position).commit()
             }
         }
@@ -104,10 +96,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
             }
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                Toast.makeText(activity?.applicationContext,"You selected ${adapterView?.getItemAtPosition(position)
-                    .toString()}",Toast.LENGTH_SHORT).show()
-
                 editor.putInt("WEIGHT",position).commit()
             }
         }
@@ -115,7 +103,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
 
         val infoButton: MaterialButton = view.findViewById(R.id.info_btn)
         infoButton.setOnClickListener {
-            var dialog = InfoDialogFragment()
+            var dialog = SettingsInfo()
             dialog.show(getParentFragmentManager(), "infoDialog")
         }
 

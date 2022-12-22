@@ -136,6 +136,10 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
                         navController.navigate(R.id.action_menuFragment_to_orderFragment)
                         true
                     }
+                    R.id.menu_info_button -> {
+                        navController.navigate(R.id.action_menuFragment_to_menuInfo)
+                        true
+                    }
                     else -> false
                 }
             }
