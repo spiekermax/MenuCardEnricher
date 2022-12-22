@@ -15,10 +15,11 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class TranslateAndSpeak(sourceLanguage: Locale, private val targetLanguage: Locale) {
+class TranslateAndSpeak(private val sourceLanguage: Locale, private val targetLanguage: Locale) {
 
     private lateinit var tts: TextToSpeech
     private var translatorObject: Translator
+    private var fromEnglishToSourcetranslatorObject: Translator
 
     init {
         // Create a translator
@@ -40,12 +41,33 @@ class TranslateAndSpeak(sourceLanguage: Locale, private val targetLanguage: Loca
             .addOnFailureListener {
                 // TODO
             }
+
+
+        // Create second  translator
+        val translatorOptions2 = TranslatorOptions.Builder()
+            .setSourceLanguage(Locale.US.language)
+            .setTargetLanguage(sourceLanguage.language)
+            .build()
+
+        fromEnglishToSourcetranslatorObject = Translation.getClient(translatorOptions2)
+
+        val conditions2 = DownloadConditions.Builder()
+            .requireWifi()
+            .build()
+
+        fromEnglishToSourcetranslatorObject.downloadModelIfNeeded(conditions2)
+            .addOnSuccessListener {
+                // TODO
+            }
+            .addOnFailureListener {
+                // TODO
+            }
     }
 
     fun speak(context: Context, textToTranslate: String) {
         tts = TextToSpeech(context) {
             if (it == TextToSpeech.SUCCESS) {
-                tts.language = targetLanguage
+                tts.language = sourceLanguage
                 tts.speak(textToTranslate, TextToSpeech.QUEUE_ADD, null, null)
             }
         }
@@ -62,6 +84,17 @@ class TranslateAndSpeak(sourceLanguage: Locale, private val targetLanguage: Loca
                 }
         }
     }
+    suspend fun translatefromEnglishTosource(text: String): String {
+        return suspendCoroutine {
+            fromEnglishToSourcetranslatorObject.translate(text)
+                .addOnSuccessListener { translatedText ->
+                    it.resume(translatedText)
+                }
+                .addOnFailureListener { exception ->
+                    it.resumeWithException(exception)
+                }
+        }
+    }
 
     fun translateAndSpeak(context: Context, dishes: List<Dish>) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -70,11 +103,11 @@ class TranslateAndSpeak(sourceLanguage: Locale, private val targetLanguage: Loca
                 if (index > 0) {
                     orderSentence += " and "
                 }
-                orderSentence += "${dish.quantity} of ${dish.name}"
+                orderSentence += "${dish.quantity} of ${dish.name}" //get original Text of Dish
             }
             orderSentence += ". Thank you!"
 
-            val translatedText = translate(orderSentence)
+            val translatedText = translatefromEnglishTosource(orderSentence)
             speak(context, translatedText)
         }
     }
