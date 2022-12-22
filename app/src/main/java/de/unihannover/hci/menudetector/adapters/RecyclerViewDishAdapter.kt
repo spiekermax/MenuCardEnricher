@@ -85,7 +85,7 @@ class RecyclerViewDishAdapter(
                 previewImageView.visibility = View.GONE
             }
 
-            if(isDishDeletable) {
+            if (isDishDeletable) {
                 sayItButton.visibility = View.GONE
             } else {
                 deleteDishButton.visibility = View.GONE
@@ -138,7 +138,9 @@ class RecyclerViewDishAdapter(
         viewHolder.priceTextView.text = price
         viewHolder.quantityTextView.text = quantity
         Glide.with(viewHolder.itemView.context)
-            .load("https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/9FE136B5-CB5C-4492-950F-EEDCDA2B5DE4/Derivates/50A6206E-0437-4FA6-898F-E5098B30CA09.jpg")
+            //.load("https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/9FE136B5-CB5C-4492-950F-EEDCDA2B5DE4/Derivates/50A6206E-0437-4FA6-898F-E5098B30CA09.jpg")
+            .load("https://pkmlimo.depok.go.id/assets/images/default.jpg")
+            .placeholder(R.mipmap.placeholder)
             .override(225, 225)
             .centerCrop()
             .transform(RoundedCorners(20))

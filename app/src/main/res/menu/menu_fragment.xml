@@ -6,6 +6,8 @@
         android:id="@+id/menu"
         android:icon="@drawable/ic_order_white"
         android:title="Orders"
+        app:actionLayout="@layout/custom_action_item_layout"
         app:iconTint="?android:attr/textColorSecondary"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        />
 </menu>
