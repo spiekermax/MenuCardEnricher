@@ -79,7 +79,12 @@
     <fragment
         android:id="@+id/orderFragment"
         android:name="de.unihannover.hci.menudetector.fragments.OrderFragment"
-        android:label="Order" />
+        android:label="Order" >
+        <action
+            android:id="@+id/action_orderFragment_to_dishFragment"
+            app:destination="@id/dishFragment" />
+    </fragment>
+
 
     <fragment
         android:id="@+id/previewFragment"
