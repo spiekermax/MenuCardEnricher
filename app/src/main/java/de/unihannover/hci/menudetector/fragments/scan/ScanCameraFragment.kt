@@ -24,6 +24,7 @@ import androidx.navigation.fragment.findNavController
 // Google
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.common.util.concurrent.ListenableFuture
+import com.google.mlkit.vision.text.Text
 
 // Internal dependencies
 import de.unihannover.hci.menudetector.R
@@ -123,11 +124,13 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         navController.navigate(R.id.action_scanCameraFragment_to_previewFragment)
     }
 
-    private fun onInfoClicked(){
+    private fun onInfoClicked() {
         navController.navigate(R.id.action_scanCameraFragment_to_scanInfo)
     }
 
-    private fun onImagePropertiesChanged(imageProperties: ImageProperties) {
+    private fun onImagePropertiesChanged(imageProperties: ImageProperties?) {
+        if (imageProperties == null) return
+
         graphicOverlayView.setImageSourceInfo(
             imageWidth = imageProperties.width,
             imageHeight = imageProperties.height,
@@ -135,19 +138,20 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         )
     }
 
-    private fun onMenuRecognized(menu: MenuRecognitionResult, confidence: Float?) {
+    private fun onTextRecognized(text: Text?) {
         graphicOverlayView.clear()
 
-        if (confidence == null) return
-        if (confidence < CONFIDENCE_THRESHOLD) return
+        if (text == null) return
 
         graphicOverlayView.add(TextOverlayGraphic(
             overlay = graphicOverlayView,
-            text = menu.text,
+            text = text,
             shouldGroupTextInBlocks = false,
             showConfidence = true,
         ))
+    }
 
+    private fun onMenuRecognized(menu: MenuRecognitionResult) {
         recognizedMenu.value = menu.toDishes()
     }
 
@@ -201,14 +205,19 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         preview.setSurfaceProvider(cameraPreviewView.surfaceProvider)
 
         val imageAnalysis: ImageAnalysis = ImageAnalysis.Builder().build()
-        imageAnalysis.setAnalyzer(cameraExecutor, MenuImageAnalyzer(
-            imagePropertiesListener = { imageProperties ->
-                onImagePropertiesChanged(imageProperties)
-            },
-            menuRecognizedListener = { menu, confidence ->
-                onMenuRecognized(menu, confidence)
-            },
-        ))
+        imageAnalysis.setAnalyzer(cameraExecutor, MenuImageAnalyzer().apply {
+            this.imagePropertiesChanges.observe(viewLifecycleOwner) {
+                onImagePropertiesChanged(it)
+            }
+
+            this.textChanges.observe(viewLifecycleOwner) {
+                onTextRecognized(it)
+            }
+
+            this.menuChanges.observe(viewLifecycleOwner) {
+                onMenuRecognized(it)
+            }
+        })
 
         val cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
