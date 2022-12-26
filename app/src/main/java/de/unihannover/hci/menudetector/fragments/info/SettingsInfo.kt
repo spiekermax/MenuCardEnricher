@@ -15,7 +15,7 @@ class SettingsInfo: DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var rootView: View= inflater.inflate(R.layout.fragment_dialog,container,false)
+        var rootView: View= inflater.inflate(R.layout.fragment_info_settings,container,false)
 
         val closeButton: MaterialButton = rootView.findViewById(R.id.closeButton)
         closeButton.setOnClickListener {
