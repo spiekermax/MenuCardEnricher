@@ -1,4 +1,4 @@
-package de.unihannover.hci.menudetector.analyzer
+package de.unihannover.hci.menudetector.services
 
 import android.content.Context
 import android.speech.tts.TextToSpeech

@@ -1,21 +1,20 @@
 package de.unihannover.hci.menudetector.models.recognition
 
-// Internal dependencies
-import de.unihannover.hci.menudetector.models.Dish
+// Kotlin
+import kotlinx.parcelize.Parcelize
+
+// Android
+import android.os.Parcelable
 
 
+@Parcelize
 data class MenuRecognitionResult(
-    val dishes: List<DishRecognitionResult>,
-) {
+    val language: String? = null,
+    val dishes: List<DishRecognitionResult> = listOf(),
+): Parcelable {
 
     /* UTILITY */
 
     fun isEmpty(): Boolean = dishes.isEmpty()
-
-    fun toDishes(): List<Dish> {
-        return dishes.map {
-            it.toDish()
-        }
-    }
 
 }

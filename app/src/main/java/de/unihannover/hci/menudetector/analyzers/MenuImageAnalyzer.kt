@@ -1,4 +1,4 @@
-package de.unihannover.hci.menudetector.analyzer
+package de.unihannover.hci.menudetector.analyzers
 
 // Kotlin
 import kotlin.math.abs
@@ -15,6 +15,7 @@ import androidx.lifecycle.Transformations
 // Google
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.text.Text.Line
 import com.google.mlkit.vision.text.Text.TextBlock
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -23,16 +24,24 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import de.unihannover.hci.menudetector.models.image.ImageProperties
 import de.unihannover.hci.menudetector.models.recognition.DishRecognitionResult
 import de.unihannover.hci.menudetector.models.recognition.MenuRecognitionResult
-import de.unihannover.hci.menudetector.util.zip
+import de.unihannover.hci.menudetector.util.Constants
 
 
-private const val UNIDENTIFIED_LANGUAGE: String = "und"
-private const val LINE_MATCHING_TOLERANCE: Float = 0.5f
+private const val LINE_MATCHING_TOLERANCE: Float = 0.75f
 
 private val PRICE_REGEX: Regex = Regex("(USD|EUR|€|\\\$)\\s?(\\d{1,3}(?:[.,]\\d{3})*[.,]\\d{2})|(\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})?)\\s?(USD|EUR|€|\\\$)")
 private val CURRENCY_REGEX: Regex = Regex("(USD|EUR|€|\\\$)")
 
 class MenuImageAnalyzer : ImageAnalysis.Analyzer {
+
+    /* COMPANION */
+
+    private companion object {
+        fun isLanguageSupported(language: String): Boolean {
+            return Constants.SUPPORTED_LANGUAGES.contains(language)
+        }
+    }
+
 
     /* ATTRIBUTES */
 
@@ -47,52 +56,21 @@ class MenuImageAnalyzer : ImageAnalysis.Analyzer {
     val imagePropertiesChanges: LiveData<ImageProperties?> = _imageProperties
 
     private val _text: MutableLiveData<Text?> = MutableLiveData(null)
-    var text: Text?
+    private var text: Text?
         get() = _text.value
         private set(value) {
             _text.postValue(value)
         }
-    val textChanges: LiveData<Text?> = _text
-
-    val language: String?
-        get() = languageChanges.value
-    val languageChanges: LiveData<String?> = Transformations.map(textChanges) {
-        if (it == null) {
-            null
-        } else {
-            identifyLanguage(it)
-        }
-    }
-
-    private val prices: List<TextBlock>
-        get() = pricesChanges.value!!
-    private val pricesChanges: LiveData<List<TextBlock>> = Transformations.map(textChanges) {
-        if (it == null) {
-            listOf()
-        } else {
-            identifyPrices(it)
-        }
-    }
-
-    private val dishes: List<DishRecognitionResult>
-        get() = dishesChanges.value!!
-    private val dishesChanges: LiveData<List<DishRecognitionResult>> = Transformations.map(
-        zip(textChanges, pricesChanges),
-    ) {
-        val text: Text? = it.first
-        val prices: List<TextBlock> = it.second
-
-        if (text == null) {
-            listOf()
-        } else {
-            identifyDishes(text, prices)
-        }
-    }
+    private val textChanges: LiveData<Text?> = _text
 
     val menu: MenuRecognitionResult
         get() = menuChanges.value!!
-    val menuChanges: LiveData<MenuRecognitionResult> = Transformations.map(dishesChanges) {
-        identifyMenu(it)
+    val menuChanges: LiveData<MenuRecognitionResult> = Transformations.map(textChanges) {
+        if (it == null) {
+            MenuRecognitionResult()
+        } else {
+            identifyMenu(it)
+        }
     }
 
 
@@ -141,29 +119,30 @@ class MenuImageAnalyzer : ImageAnalysis.Analyzer {
 
     private fun identifyLanguage(text: Text): String? {
         val textBlocks: List<TextBlock> = text.textBlocks
-        val textBlocksWithIdentifiedLanguage: List<TextBlock> = textBlocks.filter {
-            it.recognizedLanguage != UNIDENTIFIED_LANGUAGE
+        val lines: List<Line> = textBlocks.flatMap { it.lines }
+
+        val linesWithSupportedLanguage: List<Line> = lines.filter {
+            isLanguageSupported(it.recognizedLanguage)
         }
 
-        if (textBlocksWithIdentifiedLanguage.isEmpty()) return null
+        if (linesWithSupportedLanguage.isEmpty()) return null
 
-        val languageFrequencies: Map<String, Int> = textBlocksWithIdentifiedLanguage.groupingBy {
+        val languageFrequencies: Map<String, Int> = linesWithSupportedLanguage.groupingBy {
             it.recognizedLanguage
         }.eachCount()
 
         return languageFrequencies.maxBy { it.value }.key
     }
 
-    private fun identifyPrices(text: Text): List<TextBlock> {
+    private fun identifyDishes(text: Text): List<DishRecognitionResult> {
         val textBlocks: List<TextBlock> = text.textBlocks
-        return textBlocks.filter {
+        val lines: List<Line> = textBlocks.flatMap { it.lines }
+
+        val prices: List<Line> = lines.filter {
             val content: String = it.text
             PRICE_REGEX.containsMatchIn(content)
         }
-    }
-
-    private fun identifyDishes(text: Text, prices: List<TextBlock>): List<DishRecognitionResult> {
-        val textBlocks: List<TextBlock> = text.textBlocks
+        val nonPrices: List<Line> = lines.filter { !prices.contains(it) }
 
         val dishes: MutableList<DishRecognitionResult> = mutableListOf()
         for (price in prices) {
@@ -175,48 +154,70 @@ class MenuImageAnalyzer : ImageAnalysis.Analyzer {
             val upperBoundary: Int = boundingBox.top
             val lowerBoundary: Int = boundingBox.bottom
 
-            var match: TextBlock? = textBlocks.filter {
-                if (it === price) return@filter false
-
+            var match: Line? = nonPrices.filter {
                 val textBlockBoundingBox: Rect = it.boundingBox ?: return@filter false
                 val textBlockUpper: Int = textBlockBoundingBox.top
                 val textBlockLower: Int = textBlockBoundingBox.bottom
 
-                return@filter textBlockUpper <= upperBoundary && textBlockLower >= lowerBoundary
-            }.getOrNull(0)
+                return@filter textBlockUpper >= upperBoundary && textBlockLower <= lowerBoundary
+            }.minByOrNull { it.boundingBox!!.top }
 
             if (match != null) {
                 val name: String = match.text
-                dishes.add(DishRecognitionResult(name, priceValue))
+
+                val combinedBoundingBox = Rect(match.boundingBox)
+                combinedBoundingBox.union(boundingBox)
+                val combinedConfidence = match.confidence * price.confidence
+
+                dishes.add(DishRecognitionResult(
+                    name = name,
+                    price = priceValue,
+                    boundingBox = combinedBoundingBox,
+                    confidence = combinedConfidence,
+                ))
 
                 continue
             }
 
             val height: Int = abs(upperBoundary - lowerBoundary)
-            val scaledUpperBoundary = upperBoundary + height * LINE_MATCHING_TOLERANCE
-            val scaledLowerBoundary = lowerBoundary - height * LINE_MATCHING_TOLERANCE
+            val scaledUpperBoundary = upperBoundary - (1.0 * height * LINE_MATCHING_TOLERANCE)
+            val scaledLowerBoundary = lowerBoundary + (1.5 * height * LINE_MATCHING_TOLERANCE)
 
-            match = textBlocks.filter {
-                if (it === price) return@filter false
-
+            match = nonPrices.filter {
                 val textBlockBoundingBox: Rect = it.boundingBox ?: return@filter false
                 val textBlockUpper: Int = textBlockBoundingBox.top
                 val textBlockLower: Int = textBlockBoundingBox.bottom
 
-                return@filter textBlockUpper <= scaledUpperBoundary && textBlockLower >= scaledLowerBoundary
-            }.getOrNull(0)
+                return@filter textBlockUpper >= scaledUpperBoundary && textBlockLower <= scaledLowerBoundary
+            }.minByOrNull { it.boundingBox!!.top }
 
             if (match == null) continue
 
-            val name: String = match.text.lines()[0]
-            dishes.add(DishRecognitionResult(name, priceValue))
+            val name: String = match.text
+
+            val combinedBoundingBox = Rect(match.boundingBox)
+            combinedBoundingBox.union(boundingBox)
+            val combinedConfidence = match.confidence * price.confidence
+
+            dishes.add(DishRecognitionResult(
+                name = name,
+                price = priceValue,
+                boundingBox = combinedBoundingBox,
+                confidence = combinedConfidence,
+            ))
         }
 
         return dishes
     }
 
-    private fun identifyMenu(dishes: List<DishRecognitionResult>): MenuRecognitionResult {
-        return MenuRecognitionResult(dishes)
+    private fun identifyMenu(text: Text): MenuRecognitionResult {
+        val language: String? = identifyLanguage(text)
+        val dishes: List<DishRecognitionResult> = identifyDishes(text)
+
+        return MenuRecognitionResult(
+            language = language,
+            dishes = dishes,
+        )
     }
 
 }

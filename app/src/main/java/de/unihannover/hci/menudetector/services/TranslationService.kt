@@ -19,12 +19,24 @@ import com.google.mlkit.nl.translate.TranslatorOptions
 
 // Internal dependencies
 import de.unihannover.hci.menudetector.util.await
+import de.unihannover.hci.menudetector.util.Constants
 
 
 private const val SHARED_PREFERENCES_KEY: String = "SHARED_PREF"
 private const val SHARED_PREFERENCES_LANGUAGE_KEY: String = "LANGUAGE"
 
+private val LANGUAGE_CODES: List<String> = Locale.getAvailableLocales().map { it.language }.distinct()
+
 class TranslationService(val context: Context, private val lifecycle: Lifecycle) {
+
+    /* COMPANION */
+
+    private companion object {
+        fun isLanguageSupported(language: String): Boolean {
+            return Constants.SUPPORTED_LANGUAGES.contains(language)
+        }
+    }
+
 
     /* ATTRIBUTES */
 
@@ -32,16 +44,13 @@ class TranslationService(val context: Context, private val lifecycle: Lifecycle)
         SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE,
     )
 
-    private val languages: List<String> =
-        Locale.getAvailableLocales().map { it.language }.distinct()
-
     private val appLanguage: String
         get() {
             val index: Int = sharedPreferences.getInt(SHARED_PREFERENCES_LANGUAGE_KEY, -1)
             if (index == -1) {
                 return Locale.getDefault().language
             } else {
-                return languages[index]
+                return LANGUAGE_CODES[index]
             }
         }
 
@@ -86,10 +95,4 @@ class TranslationService(val context: Context, private val lifecycle: Lifecycle)
         return translator.translate(text).await()
     }
 
-
-    /* UTILITY */
-
-    fun isLanguageSupported(language: String): Boolean {
-        return languages.contains(language)
-    }
 }
