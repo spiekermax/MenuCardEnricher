@@ -1,6 +1,9 @@
 package de.unihannover.hci.menudetector.fragments
 
 // Kotlin
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 // Android
@@ -27,9 +30,6 @@ import de.unihannover.hci.menudetector.models.recognition.DishRecognitionResult
 import de.unihannover.hci.menudetector.models.recognition.MenuRecognitionResult
 import de.unihannover.hci.menudetector.services.TranslationService
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 
 
 class PreviewFragment : Fragment(R.layout.fragment_preview) {
