@@ -7,6 +7,18 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tv_info_howTo"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:text="How-to!" />
+
+    <TextView
         android:id="@+id/tv_info_targetLanguage"
         android:layout_width="360dp"
         android:layout_height="wrap_content"
@@ -14,8 +26,8 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
         android:textSize="20dp"
-        android:text="- Select target language to translate
-         the menu" />
+        android:text="- Select the target language to
+        translate the menu to it" />
 
     <TextView
         android:id="@+id/tv_info_currency"
