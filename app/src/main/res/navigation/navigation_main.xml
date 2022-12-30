@@ -100,6 +100,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popUpTo="@id/previewFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_previewFragment_to_previewInfo"
+            app:destination="@id/previewInfo" />
     </fragment>
 
     <fragment
@@ -176,6 +179,14 @@
         <action
             android:id="@+id/action_orderInfo_to_orderFragment"
             app:destination="@id/orderFragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/previewInfo"
+        android:name="de.unihannover.hci.menudetector.fragments.info.PreviewInfo"
+        android:label="PreviewInfo" >
+        <action
+            android:id="@+id/action_previewInfo_to_previewFragment"
+            app:destination="@id/previewFragment" />
     </dialog>
 
 </navigation>
