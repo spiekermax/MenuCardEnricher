@@ -41,6 +41,8 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
     private lateinit var navController: NavController
     private lateinit var dish: Dish
 
+    private var currentQuantity: Int = 0
+
     private val viewModel by activityViewModels<MainActivityViewModel>()
 
     private val args: DishFragmentArgs by navArgs()
@@ -58,6 +60,8 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
         super.onViewCreated(view, savedInstanceState)
 
         dish = viewModel.findDishById(args.dishID) ?: throw RuntimeException("Null")
+
+        currentQuantity = dish.quantity
 
         updateViewState()
 
@@ -104,17 +108,24 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
         view?.findViewById<TextView>(R.id.text_name)?.setText(dish.name)
         view?.findViewById<TextView>(R.id.text_price)?.setText(dish.price.toString() + " €")    // TODO: Adopt currency
 
-        var addButton: FloatingActionButton? = view?.findViewById<FloatingActionButton>(R.id.button_add)
+        var addButton: FloatingActionButton? = view?.findViewById(R.id.button_add)
         addButton?.setOnClickListener(null)
         addButton?.setOnClickListener {
-            viewModel.updateDish(dish.copy(quantity = dish.quantity + 1)); // TODO: How to re-build efficiently?
+            currentQuantity++
+
+            viewModel.updateDish(dish.copy(quantity = currentQuantity));
         }
 
-        view?.findViewById<ImageView>(R.id.image_dish)?.setImageBitmap(dish.details?.bitmap)
+        val imageView: ImageView? = view?.findViewById(R.id.image_dish)
+        if(dish.details?.bitmap !== null) {
+            imageView?.setImageBitmap(dish.details?.bitmap)
+            imageView?.setVisibility(View.VISIBLE)
+        } else {
+            imageView?.setVisibility(View.GONE)
+        }
 
         view?.findViewById<TextView>(R.id.text_description)?.setText(dish.details?.description)
         view?.findViewById<TextView>(R.id.text_weight)?.setText((dish.details?.weight ?: "").toString())
-
     }
 
 }
