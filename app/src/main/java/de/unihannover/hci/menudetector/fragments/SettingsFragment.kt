@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
+import java.util.Currency
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -47,6 +48,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
         val sortedlocals: List<Locale> = locales.sortedBy { it.getDisplayLanguage() }
         languagesLocalMap = sortedlocals.map { it.getDisplayName() to it }.toMap()
         val positionInLanguageArray = languagesLocalMap.keys.indexOf(defDeviceLang)
+        //get currency
+        val currencies: Set<Currency> = Currency.getAvailableCurrencies()
 
         //get the index of choosen dropdownlist item if exist, if not take the device default language
         val spLanguageValue = sharedPreferences.getInt("LANGUAGE", positionInLanguageArray)
@@ -64,7 +67,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
 
         spLanguage.adapter = adapter
 
-
+        val adapter2: ArrayAdapter<String> = ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item, languagesLocalMap.keys.toList())
+        spCurrency.adapter = adapter
+        
         spLanguage.setSelection(spLanguageValue)
         spCurrency.setSelection(spCurrencyValue)
         spWeight.setSelection(spWeightValue)

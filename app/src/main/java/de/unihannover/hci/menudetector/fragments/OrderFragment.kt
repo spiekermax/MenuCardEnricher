@@ -5,10 +5,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -49,9 +54,12 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         super.onCreate(savedInstanceState)
 
         navController = findNavController()
+
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val totalOrder: TextView= view.findViewById(R.id.text_total)
+        bindToolbarMenu(view)
         sharedPreferences = activity?.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
         val targetLanguageIndex = sharedPreferences.getInt("LANGUAGE", 0)
 
@@ -67,7 +75,7 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
             sayItButton.isEnabled = false
             sayItButton.isClickable = false
         }
-        val totalOrder: TextView= view.findViewById(R.id.text_total)
+
         totalOrder.text = calculateTotal()
 
         recyclerView.setHasFixedSize(true)
@@ -123,6 +131,30 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         sayItButton.setOnClickListener {
             tas.translateAndSpeak(requireContext(), viewModel.order)
         }
+    }
+
+
+    /* METHODS */
+
+    private fun bindToolbarMenu(view: View) {
+        requireActivity().addMenuProvider(object : MenuProvider {
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.order_fragment, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.menu1 -> {
+                        viewModel.removeAllDishes()
+                        val totalOrder: TextView= view.findViewById(R.id.text_total)
+                        totalOrder.text = calculateTotal()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
      private  fun calculateTotal(): String {

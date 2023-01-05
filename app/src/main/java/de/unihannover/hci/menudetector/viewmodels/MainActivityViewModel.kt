@@ -67,10 +67,17 @@ class MainActivityViewModel : ViewModel() {
     fun putDish(dish: Dish) = dishRepository.putDish(dish)
     fun updateDish(dish: Dish) = dishRepository.updateDish(dish)
     fun removeDish(dish: Dish) = dishRepository.removeDish(dish)
+    fun removeAllDishes() {
+        for (dish in order) {
+            this.updateDish(dish.copy(quantity = 0));
+        }
+    }
+
 
     fun approvePreview() {
         addDishes(preview)
         preview = listOf()
     }
+
 
 }
