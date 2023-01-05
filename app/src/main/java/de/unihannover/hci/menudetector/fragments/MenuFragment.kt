@@ -1,15 +1,19 @@
 package de.unihannover.hci.menudetector.fragments
 
 // Java
-import java.util.*
 
 // Android
+
+// Google
+
+// Internal dependencies
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,16 +22,13 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-
-// Google
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-
-// Internal dependencies
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.adapters.RecyclerViewDishAdapter
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
+import java.util.*
 
 
 class MenuFragment : Fragment(R.layout.fragment_menu) {
@@ -42,6 +43,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
     private lateinit var tts: TextToSpeech
 
+    private lateinit var dishCount: TextView
 
 
     /* LIFECYCLE */
@@ -78,11 +80,13 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
         recyclerViewAdapter.incrementCountListener = {
             viewModel.updateDish(it.copy(quantity = it.quantity + 1))
+            updateDishCountInBadge(calculateDishCount(), dishCount)
         }
 
         recyclerViewAdapter.decrementCountListener = {
             if (it.quantity > 0) {
                 viewModel.updateDish(it.copy(quantity = it.quantity - 1))
+                updateDishCountInBadge(calculateDishCount(), dishCount)
             } else {
                 Snackbar.make(view, "Quantity cannot be lower than zero", Snackbar.LENGTH_SHORT)
                     .setAction("Dismiss") {}
@@ -112,12 +116,28 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_fragment, menu)
+
+                val menuItem = menu.findItem(R.id.menu)
+                val actionView = menuItem.actionView
+                dishCount = actionView!!.findViewById(R.id.dish_count)
+
+                updateDishCountInBadge(calculateDishCount(), dishCount)
+
+                actionView.setOnClickListener {
+                    navController.navigate(R.id.action_menuFragment_to_orderFragment)
+                }
+
             }
+
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.menu -> {
                         navController.navigate(R.id.action_menuFragment_to_orderFragment)
+                        true
+                    }
+                    R.id.menu_info_button -> {
+                        navController.navigate(R.id.action_menuFragment_to_menuInfo)
                         true
                     }
                     else -> false
@@ -126,9 +146,27 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
+    private fun updateDishCountInBadge(count: String, view: TextView) {
+        if (count == "0") {
+            view.visibility = View.GONE
+        } else if (view.visibility == View.GONE) {
+            view.visibility = View.VISIBLE
+        }
+        view.text = count
+    }
+
     private fun bindViews(view: View) {
         this.recyclerView = view.findViewById(R.id.recycler_view)
         this.scanFab = view.findViewById(R.id.fab_scan)
     }
+
+    private fun calculateDishCount(): String {
+        var temporaryDishCount = 0
+        for (dish in viewModel.order) {
+            temporaryDishCount += dish.quantity
+        }
+        return temporaryDishCount.toString()
+    }
+
 
 }

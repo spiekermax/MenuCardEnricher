@@ -23,29 +23,69 @@ class DetailsRetrieval {
             return match
         }
 
-        fun fetch(dish: Dish): DishDetails? {
-            val urlSafeName: String = java.net.URLEncoder.encode(dish.name, "utf-8")
+        fun fetchDescription(queryPart: String): String {
+            val urlSafeQueryPart: String = java.net.URLEncoder.encode(queryPart.trim(), "utf-8")
 
-            var parsedDescription: String = parseGET(
-                "https://de.wikipedia.org/wiki/" + urlSafeName.replace("""\+""".toRegex(), "_"),
+            return parseGET(
+                "https://de.wikipedia.org/wiki/" + urlSafeQueryPart.replace("""\+""".toRegex(), "_"),
                 """<p>((?!<\/p>)(\s|.))+<\/p>"""
             )!!
+        }
+
+        fun fetchBitmap(queryPart: String): Bitmap {
+            val urlSafeQueryPart: String = java.net.URLEncoder.encode(queryPart.trim(), "utf-8")
+
+            val parsedPhotoSource: String = parseGET(
+                "https://commons.wikimedia.org/w/index.php?search=" + urlSafeQueryPart + "&title=Special:MediaSearch&go=Go&type=image",
+                """<img[^>]+data-src=\"[^"]+\""""
+            )!!
+
+            val photoImageSource: String = parsedPhotoSource
+                .replace("""^[^"]+\"""".toRegex(), "")
+                .replace("""\"(.|\s)*$""".toRegex(), "")
+
+            val `in` = URL(photoImageSource).openStream()
+
+            return BitmapFactory.decodeStream(`in`)
+        }
+
+        fun fetch(dish: Dish): DishDetails? {
+            var parsedDescription: String
+            try {
+                parsedDescription = fetchDescription(dish.name)
+            } catch(e: Exception) {
+                val firstWord: String? = """\s*[^\s_-]+"""
+                    .toRegex()
+                    .find(dish.name)
+                    ?.value
+
+                if(firstWord === null) {
+                    throw e
+                }
+
+                parsedDescription = fetchDescription(firstWord)
+            }
 
             var parsedBitmap: Bitmap? = null
             try {
-                val parsedPhotoSource: String = parseGET(
-                    "https://commons.wikimedia.org/w/index.php?search=" + urlSafeName + "&title=Special:MediaSearch&go=Go&type=image",
-                    """<img[^>]+data-src=\"[^"]+\""""
-                )!!
+                parsedBitmap = fetchBitmap(dish.name
+                    .trim()
+                    .replace("""^([^\s]+)$""".toRegex(), "$1 Gericht")
+                )
+            } catch(e: Exception) {
+                try {
+                    val firstWord: String? = """\s*[^\s_-]+"""
+                        .toRegex()
+                        .find(dish.name)
+                        ?.value
 
-                val photoImageSource: String = parsedPhotoSource
-                    .replace("""^[^"]+\"""".toRegex(), "")
-                    .replace("""\"(.|\s)*$""".toRegex(), "")
+                    if(firstWord === null) {
+                        throw e
+                    }
 
-                println(photoImageSource)
-                val `in` = URL(photoImageSource).openStream()
-                parsedBitmap = BitmapFactory.decodeStream(`in`)
-            } catch(e: Exception) {}
+                    parsedBitmap = fetchBitmap(firstWord)
+                } catch(e: Exception) {}
+            }
 
             return DishDetails(
                 bitmap = parsedBitmap,
@@ -53,6 +93,8 @@ class DetailsRetrieval {
                     .replace("""<\/?[^>]+>""".toRegex(), "")
                     .replace("""\[\/?[^>]+\]""".toRegex(), "")
                     .replace("""\(\/?[^>]+\)""".toRegex(), "")
+                    .replace(""" {2,}""".toRegex(), " ")
+                    .replace(""" ([.,:;])?""".toRegex(), "$1")
             );
         }
 

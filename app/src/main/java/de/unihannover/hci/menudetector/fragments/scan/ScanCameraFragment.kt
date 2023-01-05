@@ -123,6 +123,10 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         navController.navigate(R.id.action_scanCameraFragment_to_previewFragment)
     }
 
+    private fun onInfoClicked(){
+        navController.navigate(R.id.action_scanCameraFragment_to_scanInfo)
+    }
+
     private fun onImagePropertiesChanged(imageProperties: ImageProperties) {
         graphicOverlayView.setImageSourceInfo(
             imageWidth = imageProperties.width,
@@ -169,6 +173,9 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
         val orderButton: FloatingActionButton = view.findViewById(R.id.button_order)
         orderButton.setOnClickListener { onOrderClicked() }
+
+        val infoButton: FloatingActionButton = view.findViewById(R.id.button_info)
+        infoButton.setOnClickListener { onInfoClicked() }
 
         takePictureButton.setOnClickListener { onTakePictureClicked() }
     }

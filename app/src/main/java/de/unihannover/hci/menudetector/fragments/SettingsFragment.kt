@@ -11,13 +11,13 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import de.unihannover.hci.menudetector.R
+import de.unihannover.hci.menudetector.fragments.info.SettingsInfo
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import java.util.Currency
 import java.util.*
@@ -92,7 +92,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
             }
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-              editor.putInt("CURRENCY",position).commit()
+                editor.putInt("CURRENCY",position).commit()
+
             }
         }
 
@@ -109,7 +110,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
 
         val infoButton: MaterialButton = view.findViewById(R.id.info_btn)
         infoButton.setOnClickListener {
-            var dialog = InfoDialogFragment()
+            var dialog = SettingsInfo()
             dialog.show(getParentFragmentManager(), "infoDialog")
         }
 

@@ -2,10 +2,19 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+    android:id="@+id/menu_info_button"
+    android:icon="@drawable/ic_info"
+    android:title="Info"
+    app:iconTint="?android:attr/textColorSecondary"
+    app:showAsAction="always" />
     <item
         android:id="@+id/menu"
         android:icon="@drawable/ic_order_white"
         android:title="Orders"
+        app:actionLayout="@layout/custom_action_item_layout"
         app:iconTint="?android:attr/textColorSecondary"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        />
 </menu>
