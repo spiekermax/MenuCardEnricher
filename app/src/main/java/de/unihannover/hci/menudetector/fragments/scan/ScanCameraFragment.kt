@@ -16,7 +16,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -27,16 +26,12 @@ import com.google.common.util.concurrent.ListenableFuture
 
 // Internal dependencies
 import de.unihannover.hci.menudetector.R
-import de.unihannover.hci.menudetector.analyzer.MenuImageAnalyzer
-import de.unihannover.hci.menudetector.models.Dish
+import de.unihannover.hci.menudetector.analyzers.MenuImageAnalyzer
 import de.unihannover.hci.menudetector.models.image.ImageProperties
 import de.unihannover.hci.menudetector.models.recognition.MenuRecognitionResult
-import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import de.unihannover.hci.menudetector.views.GraphicOverlayView
-import de.unihannover.hci.menudetector.views.graphics.TextOverlayGraphic
+import de.unihannover.hci.menudetector.views.graphics.MenuOverlayGraphic
 
-
-private const val CONFIDENCE_THRESHOLD: Float = 0.75f
 
 class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
@@ -53,9 +48,13 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
     }
 
     private lateinit var navController: NavController
-    private val viewModel by activityViewModels<MainActivityViewModel>()
 
-    private val recognizedMenu: MutableLiveData<List<Dish>> = MutableLiveData(listOf())
+    private var menu: MenuRecognitionResult
+        get() = menuChanges.value!!
+        set(value) {
+            menuChanges.value = value
+        }
+    private val menuChanges: MutableLiveData<MenuRecognitionResult> = MutableLiveData(MenuRecognitionResult())
 
 
     /* LIFECYCLE */
@@ -82,7 +81,7 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
         (activity as AppCompatActivity?)?.supportActionBar?.hide()
 
-        recognizedMenu.value = listOf()
+        menuChanges.value = MenuRecognitionResult()
     }
 
     override fun onStop() {
@@ -90,7 +89,7 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
         (activity as AppCompatActivity?)?.supportActionBar?.show()
 
-        recognizedMenu.value = listOf()
+        menuChanges.value = MenuRecognitionResult()
     }
 
     override fun onDestroy() {
@@ -107,27 +106,33 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
     }
 
     private fun onSettingsClicked() {
-        navController.navigate(R.id.action_scanCameraFragment_to_settingsFragment)
+        val action = ScanCameraFragmentDirections.actionScanCameraFragmentToSettingsFragment()
+        navController.navigate(action)
     }
 
     private fun onMenuClicked() {
-        navController.navigate(R.id.action_scanCameraFragment_to_menuFragment)
+        val action = ScanCameraFragmentDirections.actionScanCameraFragmentToMenuFragment()
+        navController.navigate(action)
     }
 
     private fun onOrderClicked() {
-        navController.navigate(R.id.action_scanCameraFragment_to_orderFragment)
+        val action = ScanCameraFragmentDirections.actionScanCameraFragmentToOrderFragment()
+        navController.navigate(action)
     }
 
     private fun onTakePictureClicked() {
-        viewModel.preview = recognizedMenu.value!!
-        navController.navigate(R.id.action_scanCameraFragment_to_previewFragment)
+        val action = ScanCameraFragmentDirections.actionScanCameraFragmentToPreviewFragment(menu)
+        navController.navigate(action)
     }
 
-    private fun onInfoClicked(){
-        navController.navigate(R.id.action_scanCameraFragment_to_scanInfo)
+    private fun onInfoClicked() {
+        val action = ScanCameraFragmentDirections.actionScanCameraFragmentToScanInfo()
+        navController.navigate(action)
     }
 
-    private fun onImagePropertiesChanged(imageProperties: ImageProperties) {
+    private fun onImagePropertiesChanged(imageProperties: ImageProperties?) {
+        if (imageProperties == null) return
+
         graphicOverlayView.setImageSourceInfo(
             imageWidth = imageProperties.width,
             imageHeight = imageProperties.height,
@@ -135,20 +140,16 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         )
     }
 
-    private fun onMenuRecognized(menu: MenuRecognitionResult, confidence: Float?) {
+    private fun onMenuRecognized(menu: MenuRecognitionResult) {
+        this.menu = menu
+
         graphicOverlayView.clear()
-
-        if (confidence == null) return
-        if (confidence < CONFIDENCE_THRESHOLD) return
-
-        graphicOverlayView.add(TextOverlayGraphic(
-            overlay = graphicOverlayView,
-            text = menu.text,
-            shouldGroupTextInBlocks = false,
-            showConfidence = true,
-        ))
-
-        recognizedMenu.value = menu.toDishes()
+        graphicOverlayView.add(
+            MenuOverlayGraphic(
+                overlay = graphicOverlayView,
+                menu = menu,
+            )
+        )
     }
 
 
@@ -181,8 +182,8 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
     }
 
     private fun bindListeners() {
-        recognizedMenu.observe(viewLifecycleOwner) {
-            takePictureButton.isEnabled = it.isNotEmpty()
+        menuChanges.observe(viewLifecycleOwner) {
+            takePictureButton.isEnabled = !it.isEmpty()
         }
     }
 
@@ -201,14 +202,15 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         preview.setSurfaceProvider(cameraPreviewView.surfaceProvider)
 
         val imageAnalysis: ImageAnalysis = ImageAnalysis.Builder().build()
-        imageAnalysis.setAnalyzer(cameraExecutor, MenuImageAnalyzer(
-            imagePropertiesListener = { imageProperties ->
-                onImagePropertiesChanged(imageProperties)
-            },
-            menuRecognizedListener = { menu, confidence ->
-                onMenuRecognized(menu, confidence)
-            },
-        ))
+        imageAnalysis.setAnalyzer(cameraExecutor, MenuImageAnalyzer().apply {
+            this.imagePropertiesChanges.observe(viewLifecycleOwner) {
+                onImagePropertiesChanged(it)
+            }
+
+            this.menuChanges.observe(viewLifecycleOwner) {
+                onMenuRecognized(it)
+            }
+        })
 
         val cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 

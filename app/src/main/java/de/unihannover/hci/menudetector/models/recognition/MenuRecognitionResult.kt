@@ -1,25 +1,20 @@
 package de.unihannover.hci.menudetector.models.recognition
 
-// Google
-import com.google.mlkit.vision.text.Text
+// Kotlin
+import kotlinx.parcelize.Parcelize
 
-// Internal dependencies
-import de.unihannover.hci.menudetector.models.Dish
+// Android
+import android.os.Parcelable
 
 
+@Parcelize
 data class MenuRecognitionResult(
-    val text: Text,
-    val dishes: List<DishRecognitionResult>,
-) {
+    val language: String? = null,
+    val dishes: List<DishRecognitionResult> = listOf(),
+): Parcelable {
 
     /* UTILITY */
 
     fun isEmpty(): Boolean = dishes.isEmpty()
-
-    fun toDishes(): List<Dish> {
-        return dishes.map {
-            it.toDish()
-        }
-    }
 
 }

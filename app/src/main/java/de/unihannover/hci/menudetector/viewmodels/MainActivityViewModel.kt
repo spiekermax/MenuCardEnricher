@@ -2,7 +2,6 @@ package de.unihannover.hci.menudetector.viewmodels
 
 // Android
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 
@@ -13,16 +12,19 @@ import de.unihannover.hci.menudetector.models.DishRepository
 
 
 private val MOCKED_DISHES: List<Dish> = listOf(
-    DishBuilder("Eis", 1.99).build(),
-    DishBuilder("Nudeln", 3.99).build(),
-    DishBuilder("Kartoffeln", 6.99).build(),
-    DishBuilder("Brot", 2.99).build(),
-    DishBuilder("Bohnen", 4.99).build(),
-    DishBuilder("Spinat", 2.95).build(),
-    DishBuilder("Schnitzel", 12.99).build(),
-    DishBuilder("Pfannkuchen", 5.99).build(),
-    DishBuilder("Suppe", 6.23).build(),
+    // Willkommen im Restaurant “Aus aller Welt”
+    DishBuilder("Minestrone", 6.49).build(),                        // Class A: One word
+    DishBuilder("Griechischer Salat", 3.99).build(),                // Class B: Multiple Words
+    DishBuilder("Flammkuchen Elsässer Art", 5.99).build(),
     DishBuilder("Currywurst", 6.96).build(),
+    DishBuilder("Spaghetti Bolognese", 7.99).build(),
+    DishBuilder("Eisbein mit Sauerkraut", 13.99).build(),
+    DishBuilder("Köfte-Spieß", 5.99).build(),                       // Class C: Rare compound word
+    DishBuilder("Rumpsteak mit Steakhouse Fries", 4.99).build(),    // TODO: Multiple component info for manifold combination dishes?
+    DishBuilder("Wiener Schnitzel", 12.49).build(),
+    DishBuilder("Waffeln mit Sahne", 5.99).build(),
+    DishBuilder("Tiramisu", 3.00).build(),
+    DishBuilder("Crème Brûlée", 3.00).build(),                      // Class D: Word(s) with special charatcers
 )
 
 class MainActivityViewModel : ViewModel() {
@@ -47,16 +49,6 @@ class MainActivityViewModel : ViewModel() {
             menu.filter { it.quantity > 0 }
         }
 
-    private val _preview: MutableLiveData<List<Dish>> = MutableLiveData(listOf())
-
-    var preview: List<Dish>
-        get() = _preview.value!!
-        set(value) {
-            _preview.value = value
-        }
-
-    val previewChanges: LiveData<List<Dish>> = _preview
-
 
     /* METHODS */
 
@@ -67,10 +59,10 @@ class MainActivityViewModel : ViewModel() {
     fun putDish(dish: Dish) = dishRepository.putDish(dish)
     fun updateDish(dish: Dish) = dishRepository.updateDish(dish)
     fun removeDish(dish: Dish) = dishRepository.removeDish(dish)
-
-    fun approvePreview() {
-        addDishes(preview)
-        preview = listOf()
+    fun removeAllDishes() {
+        for (dish in order) {
+            this.updateDish(dish.copy(quantity = 0));
+        }
     }
 
 }
