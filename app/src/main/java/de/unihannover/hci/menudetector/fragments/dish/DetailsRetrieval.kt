@@ -94,7 +94,7 @@ class DetailsRetrieval {
                     .replace("""\[\/?[^>]+\]""".toRegex(), "")
                     .replace("""\(\/?[^>]+\)""".toRegex(), "")
                     .replace(""" {2,}""".toRegex(), " ")
-                    .replace(""" ([.,:;])?""".toRegex(), "$1")
+                    .replace(""" ([.,:;])""".toRegex(), "$1")
             );
         }
 

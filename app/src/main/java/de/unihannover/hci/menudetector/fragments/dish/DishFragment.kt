@@ -33,8 +33,9 @@ import kotlinx.coroutines.launch
 /**
  * TODO:
  * - Add dish details to incoming dishes without details field set
- * - Show image from dish details and other information
- * - Optional: Description
+ * - Show dish details and other information
+ * - Description
+ * - Optional: Image
  */
 class DishFragment : Fragment(R.layout.fragment_dish) {
 
