@@ -73,6 +73,7 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
             menu ?: listOf(),
             showQuantity = false,
             isQuantityEditable = false,
+            isDishDeletableAndEditable = true,
         )
 
         recyclerView.setHasFixedSize(true)
@@ -93,6 +94,75 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
             loadingIndicator.visibility = if (it == null) View.VISIBLE else View.GONE
 
             recyclerViewAdapter.updateItems(it ?: listOf())
+        }
+
+        recyclerViewAdapter.deleteDishListener = {
+            val builder = AlertDialog.Builder(activity)
+            builder.setTitle("Confirm Delete")
+            builder.setMessage("Are you sure you want to delete this dish?")
+            builder.setPositiveButton("Yes") { dialog, _ ->
+                dialog.cancel()
+            }
+            builder.setNegativeButton("No") { dialog, _ ->
+                dialog.cancel()
+            }
+            val alert = builder.create()
+            alert.show()
+        }
+
+        recyclerViewAdapter.editDishListener = {
+            val builder = AlertDialog.Builder(activity)
+            val inflater = requireActivity().layoutInflater
+            val dialogView = inflater.inflate(R.layout.dialog_edit_dish, null)
+            val dishName = dialogView.findViewById<EditText>(R.id.dish_name)
+            val dishPrice = dialogView.findViewById<EditText>(R.id.dish_price)
+
+            dishName.setText(it.name)
+            dishPrice.setText(it.price.toString())
+
+            dishPrice.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(2))
+
+            builder.setView(dialogView)
+                .setTitle("Edit dish")
+                .setPositiveButton("Save") { dialog, _ ->
+                    // viewModel.editDish(viewModel.preview.indexOf(it), dishName.text.toString(), dishPrice.text.toString().toDouble())
+                    dialog.cancel()
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
+            val alert = builder.create()
+            alert.show()
+
+            val positiveButton = alert.getButton(DialogInterface.BUTTON_POSITIVE)
+
+            val editTexts = listOf(dishName, dishPrice)
+            for (editText in editTexts) {
+                editText.addTextChangedListener(object : TextWatcher {
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                        val etDishName = dishName.text.toString().trim()
+                        val etDishPrice = dishPrice.text.toString().trim()
+
+                        if(etDishName.isEmpty()){
+                            dishName.error = "The name of a dish cannot be empty!"
+                            positiveButton.isEnabled = false
+                        } else if(etDishPrice.isEmpty()) {
+                            dishPrice.error ="The price of a dish cannot be empty!"
+                            positiveButton.isEnabled = false
+                        } else {
+                            positiveButton.isEnabled = true
+                        }
+                    }
+
+                    override fun beforeTextChanged(
+                        s: CharSequence, start: Int, count: Int, after: Int) {
+                    }
+
+                    override fun afterTextChanged(
+                        s: Editable) {
+                    }
+                })
+            }
         }
     }
 

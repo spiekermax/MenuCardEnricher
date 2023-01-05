@@ -88,7 +88,7 @@
 
     <fragment
         android:id="@+id/previewFragment"
-        android:name="de.unihannover.hci.menudetector.fragments.PreviewFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.preview.PreviewFragment"
         android:label="Preview">
         <argument
             android:name="recognizedMenu"

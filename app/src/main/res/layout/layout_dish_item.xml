@@ -76,6 +76,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="?android:attr/textColorSecondary" />
         <ImageButton
+            android:id="@+id/edit_dish"
+            android:layout_width="@android:dimen/app_icon_size"
+            android:layout_height="@android:dimen/app_icon_size"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_edit_white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/delete_dish"
+            app:tint="?android:attr/textColorSecondary"
+            />
+        <ImageButton
             android:id="@+id/button_increment_count"
             android:layout_width="@android:dimen/app_icon_size"
             android:layout_height="@android:dimen/app_icon_size"
