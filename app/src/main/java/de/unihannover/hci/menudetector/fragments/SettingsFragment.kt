@@ -67,11 +67,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
 
         spLanguage.adapter = adapter
 
-        val adapter2: ArrayAdapter<String> = ArrayAdapter<String>(
+        /*val adapter2: ArrayAdapter<String> = ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item, languagesLocalMap.keys.toList())
-        spCurrency.adapter = adapter
-        
+        spCurrency.adapter = adapter2*/
+
         spLanguage.setSelection(spLanguageValue)
         spCurrency.setSelection(spCurrencyValue)
         spWeight.setSelection(spWeightValue)
