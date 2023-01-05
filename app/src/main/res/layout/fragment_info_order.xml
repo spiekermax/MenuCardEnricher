@@ -30,57 +30,55 @@
         android:drawableLeft="@drawable/ic_back_black"/>
 
     <TextView
-        android:id="@+id/tv_settings"
+        android:id="@+id/tv_increase"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
         android:textSize="20dp"
-        android:text="   Navigate to settings"
-        android:drawableLeft="@drawable/ic_settings_black"/>
+        android:text="   Increase quantity of the dish"
+        android:drawableLeft="@drawable/ic_add_black"/>
 
     <TextView
-        android:id="@+id/tv_menu"
+        android:id="@+id/tv_decrease"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
         android:textSize="20dp"
-        android:text="   Navigate to menu"
-        android:drawableLeft="@drawable/ic_menu_black"/>
+        android:text="   Decrease quantity of the dish"
+        android:drawableLeft="@drawable/ic_remove_black"/>
 
     <TextView
-        android:id="@+id/tv_navigateOrder"
+        android:id="@+id/tv_readAloud"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
         android:textSize="20dp"
-        android:text="   Navigate to order"
-        android:drawableLeft="@drawable/ic_order_black"/>
+        android:text="   Read aloud dish"
+        android:drawableLeft="@drawable/ic_volume_up_black"/>
 
     <TextView
-        android:id="@+id/tv_Scan"
-        android:layout_width="350dp"
+        android:id="@+id/tv_info_sayIt"
+        android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
         android:textSize="20dp"
-        android:text="   Scan menu"
-        android:drawableLeft="@drawable/ic_photo_camera_black"/>
+        android:text="- To read aloud the whole order please click on the 'HELP ME SAY IT' button " />
 
 
     <Button
-        android:id="@+id/info_scan_close_btn"
+        android:id="@+id/info_order_close_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="140dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginStart="145dp"
         android:text="Close"
-        app:layout_constraintTop_toBottomOf="@+id/tv_info_menu" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_info_sayIt" />
 </LinearLayout>

@@ -13,74 +13,65 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
-        android:textSize="20dp"
-        android:textStyle="bold"
+        android:text="How-to!"
         android:textAlignment="center"
-        android:text="How-to!" />
-
-    <TextView
-        android:id="@+id/tv_navigateBack"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="30dp"
         android:textSize="20dp"
-        android:text="   Navigate back"
-        android:drawableLeft="@drawable/ic_back_black"/>
+        android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tv_settings"
-        android:layout_width="350dp"
+        android:id="@+id/tv_info_allgemenein"
+        android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
-        android:textSize="20dp"
-        android:text="   Navigate to settings"
-        android:drawableLeft="@drawable/ic_settings_black"/>
+        android:text="This is the preview fragment:"
+        android:textSize="20dp" />
 
     <TextView
-        android:id="@+id/tv_menu"
-        android:layout_width="350dp"
+        android:id="@+id/tv_info_accept"
+        android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
-        android:textSize="20dp"
-        android:text="   Navigate to menu"
-        android:drawableLeft="@drawable/ic_menu_black"/>
+        android:drawableLeft="@drawable/ic_confirm_black"
+        android:text=" Click on the confirm button"
+        android:textSize="20dp" />
 
     <TextView
-        android:id="@+id/tv_navigateOrder"
-        android:layout_width="350dp"
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:text="if the taken photo of the menu is readable"
+        android:textSize="20dp"></TextView>
+
+    <TextView
+        android:id="@+id/tv_info_decline"
+        android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
-        android:textSize="20dp"
-        android:text="   Navigate to order"
-        android:drawableLeft="@drawable/ic_order_black"/>
+        android:drawableLeft="@drawable/ic_back_black"
+        android:text=" Click on the back button "
+        android:textSize="20dp" />
 
     <TextView
-        android:id="@+id/tv_Scan"
-        android:layout_width="350dp"
+        android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
-        android:textSize="20dp"
-        android:text="   Scan menu"
-        android:drawableLeft="@drawable/ic_photo_camera_black"/>
-
+        android:text="if you want to retake another photo or simply navigate back"
+        android:textSize="20dp"></TextView>
 
     <Button
-        android:id="@+id/info_scan_close_btn"
+        android:id="@+id/info_preview_close_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="140dp"
+        android:layout_marginStart="135dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
         android:text="Close"
-        app:layout_constraintTop_toBottomOf="@+id/tv_info_menu" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_info_decline" />
 </LinearLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_info_howTo"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:text="How-to!" />
+
+    <TextView
+        android:id="@+id/tv_info_targetLanguage"
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:textSize="20dp"
+        android:text="- Select the target language to
+        translate the menu to it" />
+
+    <TextView
+        android:id="@+id/tv_info_currency"
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:textSize="20dp"
+        android:text="- Select the desired currency to
+        exchange it" />
+
+    <TextView
+        android:id="@+id/tv_info_weight"
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:textSize="20dp"
+        android:text="- Select suitable weight unit" />
+
+    <Button
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="135dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_info_weight" />
+</LinearLayout>

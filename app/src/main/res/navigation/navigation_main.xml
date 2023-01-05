@@ -83,6 +83,9 @@
         <action
             android:id="@+id/action_orderFragment_to_dishFragment"
             app:destination="@id/dishFragment" />
+        <action
+            android:id="@+id/action_orderFragment_to_orderInfo"
+            app:destination="@id/orderInfo" />
     </fragment>
 
 
@@ -102,6 +105,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popUpTo="@id/previewFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_previewFragment_to_previewInfo"
+            app:destination="@id/previewInfo" />
     </fragment>
 
     <fragment
@@ -154,7 +160,11 @@
     <fragment
         android:id="@+id/SettingsInfo"
         android:name="de.unihannover.hci.menudetector.fragments.info.SettingsInfo"
-        android:label="DialogFragment" />
+        android:label="DialogFragment" >
+        <action
+            android:id="@+id/action_SettingsInfo_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
     <dialog
         android:id="@+id/menuInfo"
         android:name="de.unihannover.hci.menudetector.fragments.info.MenuInfo"
@@ -166,6 +176,26 @@
     <dialog
         android:id="@+id/scanInfo"
         android:name="de.unihannover.hci.menudetector.fragments.info.ScanInfo"
-        android:label="ScanInfo" />
+        android:label="ScanInfo" >
+        <action
+            android:id="@+id/action_scanInfo_to_scanCameraFragment"
+            app:destination="@id/scanCameraFragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/orderInfo"
+        android:name="de.unihannover.hci.menudetector.fragments.info.OrderInfo"
+        android:label="OrderInfo" >
+        <action
+            android:id="@+id/action_orderInfo_to_orderFragment"
+            app:destination="@id/orderFragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/previewInfo"
+        android:name="de.unihannover.hci.menudetector.fragments.info.PreviewInfo"
+        android:label="PreviewInfo" >
+        <action
+            android:id="@+id/action_previewInfo_to_previewFragment"
+            app:destination="@id/previewFragment" />
+    </dialog>
 
 </navigation>

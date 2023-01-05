@@ -8,21 +8,20 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import de.unihannover.hci.menudetector.R
 
-class SettingsInfo: DialogFragment() {
+class OrderInfo: DialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var rootView: View= inflater.inflate(R.layout.fragment_info_settings,container,false)
+        var rootView: View = inflater.inflate(R.layout.fragment_info_order,container,false)
 
-        val closeButton: MaterialButton = rootView.findViewById(R.id.closeButton)
+        val closeButton: MaterialButton = rootView.findViewById(R.id.info_order_close_btn)
         closeButton.setOnClickListener {
             dismiss()
         }
         return rootView
     }
-
 
 }
