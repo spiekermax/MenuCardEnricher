@@ -1,6 +1,7 @@
-package de.unihannover.hci.menudetector.fragments
+package de.unihannover.hci.menudetector.fragments.preview
 
 // Kotlin
+import android.content.DialogInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
@@ -8,7 +9,12 @@ import kotlinx.coroutines.launch
 
 // Android
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
 import android.view.View
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
@@ -24,6 +30,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 // Internal dependencies
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.adapters.RecyclerViewDishAdapter
+import de.unihannover.hci.menudetector.fragments.preview.utils.DecimalDigitsInputFilter
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.models.DishBuilder
 import de.unihannover.hci.menudetector.models.recognition.DishRecognitionResult
@@ -97,10 +104,11 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
         }
 
         recyclerViewAdapter.deleteDishListener = {
-            val builder = AlertDialog.Builder(activity)
+            val builder = AlertDialog.Builder(requireActivity())
             builder.setTitle("Confirm Delete")
             builder.setMessage("Are you sure you want to delete this dish?")
             builder.setPositiveButton("Yes") { dialog, _ ->
+                menu = (menu ?: listOf()).filter { dish -> dish.id != it.id }
                 dialog.cancel()
             }
             builder.setNegativeButton("No") { dialog, _ ->
@@ -111,7 +119,7 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
         }
 
         recyclerViewAdapter.editDishListener = {
-            val builder = AlertDialog.Builder(activity)
+            val builder = AlertDialog.Builder(requireActivity())
             val inflater = requireActivity().layoutInflater
             val dialogView = inflater.inflate(R.layout.dialog_edit_dish, null)
             val dishName = dialogView.findViewById<EditText>(R.id.dish_name)
@@ -125,7 +133,13 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
             builder.setView(dialogView)
                 .setTitle("Edit dish")
                 .setPositiveButton("Save") { dialog, _ ->
-                    // viewModel.editDish(viewModel.preview.indexOf(it), dishName.text.toString(), dishPrice.text.toString().toDouble())
+                    menu = (menu ?: listOf()).map { dish ->
+                        if (dish.id == it.id) {
+                            DishBuilder(dishName.text.toString(), dishPrice.text.toString().toDouble()).id(dish.id).build()
+                        } else {
+                            dish
+                        }
+                    }
                     dialog.cancel()
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
