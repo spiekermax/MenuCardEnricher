@@ -46,7 +46,7 @@ dependencies {
     def fragment_version = "1.5.4"
     def nav_version = "2.5.3"
 
-    def google_mlkit_version = "18.0.2"
+    def google_mlkit_version = "16.0.0-beta6"
     def google_material_version = "1.7.0"
 
     implementation "androidx.activity:activity-ktx:$activity_version"
@@ -63,8 +63,8 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
-    implementation "com.google.android.gms:play-services-mlkit-text-recognition:$google_mlkit_version"
     implementation "com.google.android.material:material:$google_material_version"
+    implementation "com.google.mlkit:text-recognition:$google_mlkit_version"
     implementation 'com.google.mlkit:translate:17.0.1'
 
     testImplementation "junit:junit:4.13.2"

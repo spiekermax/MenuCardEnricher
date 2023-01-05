@@ -1,19 +1,17 @@
 package de.unihannover.hci.menudetector.models.recognition
 
-// Internal dependencies
-import de.unihannover.hci.menudetector.models.Dish
-import de.unihannover.hci.menudetector.models.DishBuilder
+// Kotlin
+import kotlinx.parcelize.Parcelize
+
+// Android
+import android.graphics.Rect
+import android.os.Parcelable
 
 
+@Parcelize
 data class DishRecognitionResult(
     val name: String,
     val price: Double,
-) {
-
-    /* UTILITY */
-
-    fun toDish(): Dish {
-        return DishBuilder(name, price).build()
-    }
-
-}
+    val boundingBox: Rect,
+    val confidence: Float,
+) : Parcelable

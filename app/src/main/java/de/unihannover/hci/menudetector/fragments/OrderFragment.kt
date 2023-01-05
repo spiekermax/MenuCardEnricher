@@ -22,16 +22,11 @@ import com.google.android.material.button.MaterialButton
 
 // Google
 import com.google.android.material.snackbar.Snackbar
-import com.google.mlkit.common.model.DownloadConditions
-import com.google.mlkit.nl.translate.TranslateLanguage
-import com.google.mlkit.nl.translate.Translation
-import com.google.mlkit.nl.translate.Translator
-import com.google.mlkit.nl.translate.TranslatorOptions
 
 // Internal dependencies
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.adapters.RecyclerViewDishAdapter
-import de.unihannover.hci.menudetector.analyzer.TranslateAndSpeak
+import de.unihannover.hci.menudetector.services.TranslateAndSpeak
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import java.util.*
