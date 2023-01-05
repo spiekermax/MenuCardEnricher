@@ -41,11 +41,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
         val navController: NavController = findNavController()
         sharedPreferences = activity?.getSharedPreferences("SHARED_PREF",Context.MODE_PRIVATE)!!
         val editor = sharedPreferences!!.edit()
-
         //get Default system Language ans set it as default in app setting
         val defDeviceLang:String = Locale.getDefault().getDisplayLanguage()
         val locales: List<Locale> = Locale.getAvailableLocales().asList().distinctBy { it.language}
-        languagesLocalMap = locales.map { it.getDisplayName() to it }.toMap()
+        val sortedlocals: List<Locale> = locales.sortedBy { it.getDisplayLanguage() }
+        languagesLocalMap = sortedlocals.map { it.getDisplayName() to it }.toMap()
         val positionInLanguageArray = languagesLocalMap.keys.indexOf(defDeviceLang)
 
         //get the index of choosen dropdownlist item if exist, if not take the device default language
@@ -75,12 +75,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
             }
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                Toast.makeText(activity?.applicationContext,"You selected ${adapterView?.getItemAtPosition(position)
-                    .toString()}",Toast.LENGTH_SHORT).show()
-
                 editor.putInt("LANGUAGE",position).commit()
-                editor.putString("LANGUAGE_AS_String", languagesLocalMap.keys.elementAt(position)).commit()
             }
         }
 
@@ -90,11 +85,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
             }
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                Toast.makeText(activity?.applicationContext,"You selected ${adapterView?.getItemAtPosition(position)
-                    .toString()}",Toast.LENGTH_SHORT).show()
-
-                editor.putInt("CURRENCY",position).commit()
+              editor.putInt("CURRENCY",position).commit()
             }
         }
 
@@ -104,10 +95,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings){
             }
 
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                Toast.makeText(activity?.applicationContext,"You selected ${adapterView?.getItemAtPosition(position)
-                    .toString()}",Toast.LENGTH_SHORT).show()
-
                 editor.putInt("WEIGHT",position).commit()
             }
         }
