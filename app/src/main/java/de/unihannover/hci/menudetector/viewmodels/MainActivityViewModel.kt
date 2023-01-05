@@ -73,4 +73,13 @@ class MainActivityViewModel : ViewModel() {
         preview = listOf()
     }
 
+    fun deleteDish(index: Int) {
+        _preview.value = _preview.value?.toMutableList()?.apply { removeAt(index) }
+    }
+
+    fun editDish(index: Int, name: String , price: Double) {
+        val newDish = DishBuilder(name, price).build()
+        _preview.value = _preview.value?.toMutableList()?.apply { set(index, newDish)}
+    }
+
 }
