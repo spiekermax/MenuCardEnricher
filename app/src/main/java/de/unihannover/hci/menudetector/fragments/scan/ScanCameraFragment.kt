@@ -7,6 +7,7 @@ import java.util.concurrent.Executors
 // Android
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
@@ -40,6 +41,7 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
     private lateinit var cameraPreviewView: PreviewView
     private lateinit var graphicOverlayView: GraphicOverlayView
 
+    private lateinit var backButton: FloatingActionButton
     private lateinit var takePictureButton: FloatingActionButton
 
     private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
@@ -54,7 +56,8 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         set(value) {
             menuChanges.value = value
         }
-    private val menuChanges: MutableLiveData<MenuRecognitionResult> = MutableLiveData(MenuRecognitionResult())
+    private val menuChanges: MutableLiveData<MenuRecognitionResult> =
+        MutableLiveData(MenuRecognitionResult())
 
 
     /* LIFECYCLE */
@@ -80,6 +83,12 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         super.onResume()
 
         (activity as AppCompatActivity?)?.supportActionBar?.hide()
+
+        if (navController.previousBackStackEntry == null) {
+            backButton.visibility = View.GONE
+        } else {
+            backButton.visibility = View.VISIBLE
+        }
 
         menuChanges.value = MenuRecognitionResult()
     }
@@ -159,6 +168,7 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         cameraPreviewView = view.findViewById(R.id.camera_preview)
         graphicOverlayView = view.findViewById(R.id.graphic_overlay)
 
+        backButton = view.findViewById(R.id.button_back)
         takePictureButton = view.findViewById(R.id.button_take_picture)
     }
 
