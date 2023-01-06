@@ -12,14 +12,21 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
@@ -46,6 +53,8 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
     private val args: PreviewFragmentArgs by navArgs()
     private val viewModel by activityViewModels<MainActivityViewModel>()
 
+    private lateinit var navController: NavController
+
     private val translationService by lazy {
         TranslationService(requireContext(), lifecycle)
     }
@@ -61,8 +70,16 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
 
     /* LIFECYCLE */
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        navController = findNavController()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        bindToolbarMenu()
 
         val recognizedMenu: MenuRecognitionResult = args.recognizedMenu ?: MenuRecognitionResult()
         lifecycleScope.launch {
@@ -201,6 +218,24 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
                 DishBuilder(translatedName, convertedPrice).build()
             }
         }
+    }
+
+    private fun bindToolbarMenu() {
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.preview_fragment, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.help -> {
+                        navController.navigate(R.id.action_previewFragment_to_previewInfo)
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
 }
