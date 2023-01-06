@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.Lifecycle
+import com.google.mlkit.nl.translate.TranslateLanguage
 
 // Google
 import com.google.mlkit.nl.translate.Translation
@@ -61,6 +62,10 @@ class TranslationService(val context: Context, private val lifecycle: Lifecycle)
 
     suspend fun translateIntoAppLanguage(text: String, sourceLanguage: String): String {
         return translate(text, sourceLanguage, appLanguage)
+    }
+
+    suspend fun translateIntoEnglish(text: String, sourceLanguage: String): String {
+        return translate(text, sourceLanguage, TranslateLanguage.ENGLISH)
     }
 
     private suspend fun translate(
