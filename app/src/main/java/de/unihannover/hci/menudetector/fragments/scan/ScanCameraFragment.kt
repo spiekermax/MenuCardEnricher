@@ -182,8 +182,8 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         val menuButton: FloatingActionButton = view.findViewById(R.id.button_menu)
         menuButton.setOnClickListener { onMenuClicked() }
 
-        val orderButton: FloatingActionButton = view.findViewById(R.id.button_order)
-        orderButton.setOnClickListener { onOrderClicked() }
+        // val orderButton: FloatingActionButton = view.findViewById(R.id.button_order)
+        // orderButton.setOnClickListener { onOrderClicked() }
 
         val infoButton: FloatingActionButton = view.findViewById(R.id.button_info)
         infoButton.setOnClickListener { onInfoClicked() }
