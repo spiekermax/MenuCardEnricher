@@ -1,4 +1,5 @@
 <resources>
+
     <style name="Theme.MenuDetector" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color -->
         <item name="colorPrimary">@color/purple_500</item>
@@ -16,5 +17,10 @@
 
     <style name="Theme.MenuDetector.ActionBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Theme.MenuDetector.RoundedCornersDialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="dialogCornerRadius">16dp</item>
+        <item name="android:background">?attr/popupMenuBackground</item>
     </style>
 </resources>

@@ -1,84 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:minWidth="300dp"
+    android:orientation="vertical"
+    android:paddingVertical="16dp">
 
     <TextView
-        android:id="@+id/tv_info_howTo"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:text="How-to!" />
-
-    <TextView
-        android:id="@+id/tv_navigateBack"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="30dp"
-        android:textSize="20dp"
-        android:text="   Navigate back"
-        android:drawableLeft="@drawable/ic_back_black"/>
-
-    <TextView
-        android:id="@+id/tv_increase"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
-        android:textSize="20dp"
-        android:text="   Increase quantity of the dish"
-        android:drawableLeft="@drawable/ic_add_black"/>
-
-    <TextView
-        android:id="@+id/tv_decrease"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
-        android:textSize="20dp"
-        android:text="   Decrease quantity of the dish"
-        android:drawableLeft="@drawable/ic_remove_black"/>
-
-    <TextView
-        android:id="@+id/tv_readAloud"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
-        android:textSize="20dp"
-        android:text="   Read aloud dish"
-        android:drawableLeft="@drawable/ic_volume_up_black"/>
-
-    <TextView
-        android:id="@+id/tv_info_sayIt"
-        android:layout_width="360dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
-        android:textSize="20dp"
-        android:text="- To read aloud the whole order please click on the 'HELP ME SAY IT' button " />
-
-
-    <Button
-        android:id="@+id/info_order_close_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="145dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:text="Help"
+        android:textAppearance="?attr/textAppearanceOverline"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:drawablePadding="12dp"
+            android:text="Navigate back"
+            android:textSize="16sp"
+            app:drawableStartCompat="@drawable/ic_back_black"
+            app:drawableTint="?attr/colorOnSurface" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:drawablePadding="12dp"
+            android:text="Increase dish quantity"
+            android:textSize="16sp"
+            app:drawableStartCompat="@drawable/ic_add_black"
+            app:drawableTint="?attr/colorOnSurface" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:drawablePadding="12dp"
+            android:text="Decrease dish quantity"
+            android:textSize="16sp"
+            app:drawableStartCompat="@drawable/ic_remove_black"
+            app:drawableTint="?attr/colorOnSurface" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:drawablePadding="12dp"
+            android:text="Read aloud"
+            android:textSize="16sp"
+            app:drawableStartCompat="@drawable/ic_volume_up_black"
+            app:drawableTint="?attr/colorOnSurface" />
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="Close"
-        app:layout_constraintTop_toBottomOf="@+id/tv_info_sayIt" />
+        android:textColor="@android:color/white"
+        app:icon="@drawable/ic_close"
+        app:iconTint="@android:color/white" />
+
 </LinearLayout>

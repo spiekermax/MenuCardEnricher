@@ -1,120 +1,162 @@
 package de.unihannover.hci.menudetector.fragments
 
-// Android
+// Java
+import java.util.Locale
 
-// Internal dependencies
+// Android
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
+
+// Google
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
+
+// Internal dependencies
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.fragments.info.SettingsInfo
-import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
-import java.util.Currency
-import java.util.*
-import kotlin.collections.ArrayList
+import de.unihannover.hci.menudetector.util.Constants
 
 
-/**
- * TODO:
- * - Add options to dropdown (done)
- * - Select system language default (done)
- * - Remove start language dropdown (done)
- * - Store current value in SharedPreferences (done)
- * - Optional: Converter class between money and/or weight units
- */
-class SettingsFragment : Fragment(R.layout.fragment_settings){
-    private val viewModel by activityViewModels<MainActivityViewModel>()
-    lateinit var sharedPreferences: SharedPreferences
-    private var languagesLocalMap: Map<String,Locale> = HashMap<String,Locale>()
+class SettingsFragment : Fragment(R.layout.fragment_settings) {
+
+    /* ATTRIBUTES */
+
+    private val sharedPreferences: SharedPreferences by lazy {
+        requireContext().getSharedPreferences(
+            Constants.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE,
+        )
+    }
+
+    private val sharedPreferencesEditor: SharedPreferences.Editor by lazy {
+        sharedPreferences.edit()
+    }
+
+    private val supportedLanguages: List<String>
+        get() = Constants.SUPPORTED_LANGUAGES
+
+    private val supportedCurrencies: List<String>
+        get() = resources.getStringArray(R.array.currencies).toList()
+
+    private val supportedWeightSystems: List<String>
+        get() = resources.getStringArray(R.array.weight_systems).toList()
+
+
+    /* LIFECYCLE */
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val navController: NavController = findNavController()
-        sharedPreferences = activity?.getSharedPreferences("SHARED_PREF",Context.MODE_PRIVATE)!!
-        val editor = sharedPreferences!!.edit()
-        //get Default system Language ans set it as default in app setting
-        val defDeviceLang:String = Locale.getDefault().getDisplayLanguage()
-        val locales: List<Locale> = Locale.getAvailableLocales().asList().distinctBy { it.language}
-        val sortedlocals: List<Locale> = locales.sortedBy { it.getDisplayLanguage() }
-        languagesLocalMap = sortedlocals.map { it.getDisplayName() to it }.toMap()
-        val positionInLanguageArray = languagesLocalMap.keys.indexOf(defDeviceLang)
-        //get currency
-        val currencies: Set<Currency> = Currency.getAvailableCurrencies()
 
-        //get the index of choosen dropdownlist item if exist, if not take the device default language
-        val spLanguageValue = sharedPreferences.getInt("LANGUAGE", positionInLanguageArray)
-        val spCurrencyValue = sharedPreferences.getInt("CURRENCY",0)
-        val spWeightValue = sharedPreferences.getInt("WEIGHT",0)
+        val deviceLanguage: String = Locale.getDefault().language
 
+        val defaultLanguage: String =
+            if (supportedLanguages.contains(deviceLanguage)) {
+                deviceLanguage
+            } else {
+                supportedLanguages[0]
+            }
+        val preferredLanguage: String = sharedPreferences.getString(
+            Constants.SHARED_PREFERENCES_LANGUAGE_KEY,
+            defaultLanguage,
+        )!!
 
-        val spLanguage: Spinner = view.findViewById(R.id.spLanguage)
-        val spCurrency: Spinner = view.findViewById(R.id.spCurrency)
-        val spWeight: Spinner = view.findViewById(R.id.spWeight)
+        val defaultCurrency: String = supportedCurrencies[0]
+        val preferredCurrency: String = sharedPreferences.getString(
+            Constants.SHARED_PREFERENCES_CURRENCY_KEY,
+            defaultCurrency,
+        )!!
 
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+        val defaultWeightSystem: String = supportedWeightSystems[0]
+        val preferredWeightSystem: String = sharedPreferences.getString(
+            Constants.SHARED_PREFERENCES_WEIGHT_SYSTEM_KEY,
+            defaultWeightSystem,
+        )!!
+
+        val languageDropdown: AutoCompleteTextView = view.findViewById(R.id.language)
+        val currencyDropdown: AutoCompleteTextView = view.findViewById(R.id.currency)
+        val weightSystemDropdown: AutoCompleteTextView = view.findViewById(R.id.weight_system)
+
+        val languageAdapter = ArrayAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_dropdown_item, languagesLocalMap.keys.toList())
-
-        spLanguage.adapter = adapter
-
-        /*val adapter2: ArrayAdapter<String> = ArrayAdapter<String>(
+            android.R.layout.simple_spinner_dropdown_item,
+            supportedLanguages.map {
+                Locale(it).displayLanguage
+            },
+        )
+        val currencyAdapter = ArrayAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_dropdown_item, languagesLocalMap.keys.toList())
-        spCurrency.adapter = adapter2*/
+            android.R.layout.simple_spinner_dropdown_item,
+            supportedCurrencies,
+        )
+        val weightSystemAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            supportedWeightSystems,
+        )
 
-        spLanguage.setSelection(spLanguageValue)
-        spCurrency.setSelection(spCurrencyValue)
-        spWeight.setSelection(spWeightValue)
+        languageDropdown.setAdapter(languageAdapter)
+        currencyDropdown.setAdapter(currencyAdapter)
+        weightSystemDropdown.setAdapter(weightSystemAdapter)
 
-        spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                //nothing to do
-            }
+        languageDropdown.setText(Locale(preferredLanguage).displayLanguage, false)
+        currencyDropdown.setText(preferredCurrency, false)
+        weightSystemDropdown.setText(preferredWeightSystem, false)
 
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                editor.putInt("LANGUAGE",position).commit()
-            }
+        languageDropdown.setOnItemClickListener { _, _, index, _ ->
+            val selectedLanguage: String = languageAdapter.getItem(index)!!
+            val selectedLanguageCode: String = Locale.getAvailableLocales().find {
+                it.displayLanguage.lowercase() == selectedLanguage.lowercase()
+            }!!.language
+
+            sharedPreferencesEditor.putString(
+                Constants.SHARED_PREFERENCES_LANGUAGE_KEY,
+                selectedLanguageCode,
+            ).commit()
+
+            Snackbar.make(
+                requireView(),
+                "Updated language to ${selectedLanguage.replaceFirstChar(Char::titlecase)}",
+                Snackbar.LENGTH_SHORT,
+            ).show()
+        }
+        currencyDropdown.setOnItemClickListener { _, _, index, _ ->
+            val selectedCurrency: String = currencyAdapter.getItem(index)!!
+
+            sharedPreferencesEditor.putString(
+                Constants.SHARED_PREFERENCES_CURRENCY_KEY,
+                selectedCurrency,
+            ).commit()
+
+            Snackbar.make(
+                requireView(),
+                "Updated currency to $selectedCurrency",
+                Snackbar.LENGTH_SHORT,
+            ).show()
+        }
+        weightSystemDropdown.setOnItemClickListener { _, _, index, _ ->
+            val selectedWeightSystem: String = weightSystemAdapter.getItem(index)!!
+
+            sharedPreferencesEditor.putString(
+                Constants.SHARED_PREFERENCES_WEIGHT_SYSTEM_KEY,
+                selectedWeightSystem,
+            ).commit()
+
+            Snackbar.make(
+                requireView(),
+                "Updated weight system to $selectedWeightSystem",
+                Snackbar.LENGTH_SHORT,
+            ).show()
         }
 
-        spCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                //nothing to do
-            }
-
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                editor.putInt("CURRENCY",position).commit()
-
-            }
+        val helpButton: MaterialButton = view.findViewById(R.id.help_button)
+        helpButton.setOnClickListener {
+            SettingsInfo().show(parentFragmentManager, "helpDialog")
         }
-
-        spWeight.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                //nothing to do
-            }
-
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                editor.putInt("WEIGHT",position).commit()
-            }
-        }
-
-
-        val infoButton: MaterialButton = view.findViewById(R.id.info_btn)
-        infoButton.setOnClickListener {
-            var dialog = SettingsInfo()
-            dialog.show(getParentFragmentManager(), "infoDialog")
-        }
-
     }
-
 
 }

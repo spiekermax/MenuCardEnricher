@@ -11,9 +11,9 @@ import kotlinx.coroutines.withContext
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.Lifecycle
-import com.google.mlkit.nl.translate.TranslateLanguage
 
 // Google
+import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.Translator
 import com.google.mlkit.nl.translate.TranslatorOptions
@@ -22,11 +22,6 @@ import com.google.mlkit.nl.translate.TranslatorOptions
 import de.unihannover.hci.menudetector.util.await
 import de.unihannover.hci.menudetector.util.Constants
 
-
-private const val SHARED_PREFERENCES_KEY: String = "SHARED_PREF"
-private const val SHARED_PREFERENCES_LANGUAGE_KEY: String = "LANGUAGE"
-
-private val LANGUAGE_CODES: List<String> = Locale.getAvailableLocales().map { it.language }.distinct()
 
 class TranslationService(val context: Context, private val lifecycle: Lifecycle) {
 
@@ -42,16 +37,22 @@ class TranslationService(val context: Context, private val lifecycle: Lifecycle)
     /* ATTRIBUTES */
 
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
-        SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE,
+        Constants.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE,
     )
 
     private val appLanguage: String
         get() {
-            val index: Int = sharedPreferences.getInt(SHARED_PREFERENCES_LANGUAGE_KEY, -1)
-            if (index == -1) {
-                return Locale.getDefault().language
+            val preferredLanguage: String? = sharedPreferences.getString(Constants.SHARED_PREFERENCES_LANGUAGE_KEY, null)
+
+            return if (preferredLanguage != null) {
+                preferredLanguage
             } else {
-                return LANGUAGE_CODES[index]
+                val deviceLanguage: String = Locale.getDefault().language
+                if (isLanguageSupported(deviceLanguage)) {
+                    deviceLanguage
+                } else {
+                    Constants.SUPPORTED_LANGUAGES[0]
+                }
             }
         }
 

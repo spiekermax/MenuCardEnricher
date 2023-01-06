@@ -5,79 +5,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="16dp"
     android:orientation="vertical"
     tools:context="fragments.SettingsFragment">
 
-
     <TextView
-        android:id="@+id/tv_Language"
+        android:id="@+id/language_headline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Target Language"
-        android:textSize="20dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="30dp" />
+        android:layout_marginBottom="16dp"
+        android:text="Your language"
+        android:textAppearance="?attr/textAppearanceOverline"
+        android:textSize="16sp" />
 
-    <Spinner
-        android:id="@+id/spLanguage"
-        android:spinnerMode="dropdown"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="27dp"></Spinner>
-
-
-    <TextView
-        android:id="@+id/tv_Currency"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Currency"
-        android:textSize="20dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="32dp"/>
+        android:layout_marginBottom="32dp"
+        android:hint="Select your language">
 
-    <Spinner
-        android:id="@+id/spCurrency"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="27dp"
-        android:spinnerMode="dropdown"
-        android:entries="@array/currency"></Spinner>
+        <AutoCompleteTextView
+            android:id="@+id/language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:id="@+id/tv_Weight"
+        android:id="@+id/currency_headline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="32dp"
-        android:textSize="20dp"
-        android:text="Weight Unit" />
+        android:layout_marginBottom="16dp"
+        android:text="Your currency"
+        android:textAppearance="?attr/textAppearanceOverline"
+        android:textSize="16sp" />
 
-    <Spinner
-        android:id="@+id/spWeight"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="27dp"
-        android:spinnerMode="dropdown"
-        android:entries="@array/weight"></Spinner>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:hint="Select your currency">
 
-    <Button
-        android:id="@+id/info_btn"
+        <AutoCompleteTextView
+            android:id="@+id/currency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/weight_system_headline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Your weight system"
+        android:textAppearance="?attr/textAppearanceOverline"
+        android:textSize="16sp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:hint="Select your weight system">
+
+        <AutoCompleteTextView
+            android:id="@+id/weight_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/help_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="150dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="27dp"
-        android:text="Info" />
-
+        android:layout_gravity="center_horizontal"
+        android:text="Help"
+        app:icon="@drawable/ic_help" />
 
 </LinearLayout>
