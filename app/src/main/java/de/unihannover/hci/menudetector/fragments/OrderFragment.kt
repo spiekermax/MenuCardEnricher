@@ -4,7 +4,6 @@ package de.unihannover.hci.menudetector.fragments
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -141,7 +140,7 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.menu1 -> {
-                        viewModel.removeAllDishes()
+                        viewModel.removeAllDishesFromOrder()
                         val totalOrder: TextView= view.findViewById(R.id.text_total)
                         totalOrder.text = calculateTotal()
                         true

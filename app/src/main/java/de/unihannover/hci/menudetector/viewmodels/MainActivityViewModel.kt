@@ -59,9 +59,10 @@ class MainActivityViewModel : ViewModel() {
     fun putDish(dish: Dish) = dishRepository.putDish(dish)
     fun updateDish(dish: Dish) = dishRepository.updateDish(dish)
     fun removeDish(dish: Dish) = dishRepository.removeDish(dish)
-    fun removeAllDishes() {
+
+    fun removeAllDishesFromOrder() {
         for (dish in order) {
-            this.updateDish(dish.copy(quantity = 0));
+            this.updateDish(dish.copy(quantity = 0))
         }
     }
 
