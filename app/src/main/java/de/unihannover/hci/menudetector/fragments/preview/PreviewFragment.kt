@@ -80,7 +80,7 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
             menu ?: listOf(),
             showQuantity = false,
             isQuantityEditable = false,
-            isDishDeletableAndEditable = true,
+            isDishModifiable = true,
         )
 
         recyclerView.setHasFixedSize(true)

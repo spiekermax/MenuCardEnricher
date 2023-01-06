@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+
+// Glide
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
@@ -23,7 +25,7 @@ class RecyclerViewDishAdapter(
     private val showQuantity: Boolean = true,
     private val isQuantityEditable: Boolean = true,
     private val showImage: Boolean = true,
-    private val isDishDeletableAndEditable: Boolean = false,
+    private val isDishModifiable: Boolean = false,
 ) : RecyclerView.Adapter<RecyclerViewDishAdapter.ViewHolder>() {
 
     /* ATTRIBUTES */
@@ -65,7 +67,7 @@ class RecyclerViewDishAdapter(
             priceTextView = view.findViewById(R.id.text_price)
             quantityTextView = view.findViewById(R.id.text_quantity)
 
-            previewImageView = view.findViewById(R.id.preview_image_dish)
+            previewImageView = view.findViewById(R.id.preview_image)
 
             incrementCountButton = view.findViewById(R.id.button_increment_count)
             decrementCountButton = view.findViewById(R.id.button_decrement_count)
@@ -77,21 +79,30 @@ class RecyclerViewDishAdapter(
                 quantityTextView.visibility = View.GONE
                 incrementCountButton.visibility = View.GONE
                 decrementCountButton.visibility = View.GONE
+            } else {
+                quantityTextView.visibility = View.VISIBLE
             }
 
             if (!isQuantityEditable) {
                 incrementCountButton.visibility = View.GONE
                 decrementCountButton.visibility = View.GONE
+            } else {
+                incrementCountButton.visibility = View.VISIBLE
+                decrementCountButton.visibility = View.VISIBLE
             }
 
             if (!showImage) {
                 previewImageView.visibility = View.GONE
+            } else {
+                previewImageView.visibility = View.VISIBLE
             }
 
-            if (isDishDeletableAndEditable) {
+            if (isDishModifiable) {
                 sayItButton.visibility = View.GONE
-
+                deleteDishButton.visibility = View.VISIBLE
+                editDishButton.visibility = View.VISIBLE
             } else {
+                sayItButton.visibility = View.VISIBLE
                 deleteDishButton.visibility = View.GONE
                 editDishButton.visibility = View.GONE
             }
@@ -146,6 +157,7 @@ class RecyclerViewDishAdapter(
         viewHolder.titleTextView.text = name
         viewHolder.priceTextView.text = price
         viewHolder.quantityTextView.text = quantity
+
         Glide.with(viewHolder.itemView.context)
             .load("https://pkmlimo.depok.go.id/assets/images/default.jpg")
             .placeholder(R.mipmap.placeholder)
