@@ -31,7 +31,7 @@ class MainActivityViewModel : ViewModel() {
 
     /* ATTRIBUTES */
 
-    private val dishRepository: DishRepository = DishRepository(MOCKED_DISHES)
+    private val dishRepository: DishRepository = DishRepository(listOf())
 
     val menu: List<Dish>
         get() = dishRepository.dishes
