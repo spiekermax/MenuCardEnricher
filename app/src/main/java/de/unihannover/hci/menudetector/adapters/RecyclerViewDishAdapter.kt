@@ -160,7 +160,7 @@ class RecyclerViewDishAdapter(
 
         Glide.with(viewHolder.itemView.context)
             .load("https://pkmlimo.depok.go.id/assets/images/default.jpg")
-            .placeholder(R.mipmap.placeholder)
+            .placeholder(R.drawable.placeholder)
             .override(225, 225)
             .centerCrop()
             .transform(RoundedCorners(20))
