@@ -27,6 +27,7 @@ import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.adapters.RecyclerViewDishAdapter
 import de.unihannover.hci.menudetector.services.TranslateAndSpeak
 import de.unihannover.hci.menudetector.models.Dish
+import de.unihannover.hci.menudetector.util.formatPrice
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import java.util.*
 
@@ -160,6 +161,6 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         for (dish in viewModel.order) {
             totalSum += (dish.quantity * dish.price)
         }
-        return "Total: " + String.format("%.2f", totalSum) + "€"
+        return "Total: " + formatPrice(totalSum)
     }
 }

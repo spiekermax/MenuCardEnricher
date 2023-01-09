@@ -1,8 +1,14 @@
 package de.unihannover.hci.menudetector.util
 
 // Android
+import android.content.Context
+import android.preference.PreferenceManager
+import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import de.unihannover.hci.menudetector.models.Price
+import java.lang.ref.WeakReference
 
 
 @Suppress("UNCHECKED_CAST")
@@ -34,4 +40,8 @@ fun <A, B> zip(first: LiveData<A>, second: LiveData<B>): LiveData<Pair<A, B>> {
     }
 
     return mediatorLiveData
+}
+
+fun formatPrice(price: Double): String {
+    return "€ ${String.format("%.2f", price)}"  // TODO: Use currency from shared preferences
 }
