@@ -28,8 +28,15 @@ class DetailsRetrieval {
 
             return parseGET(
                 "https://de.wikipedia.org/wiki/" + urlSafeQueryPart.replace("""\+""".toRegex(), "_"),
-                """<p>((?!<\/p>)(\s|.))+<\/p>"""
+                """<p>((?!<\/p>)(\s|.))+<\/p>(\s*<p>((?!<\/p>)(\s|.))+<\/p>)?"""
             )!!
+            .replace(""" {2,}""".toRegex(), " ")
+            .replace("""<\/p>""".toRegex(), "\n\n")
+            .replace("""<\/?[^>]+>""".toRegex(), "")
+            .replace("""\[\/?[^>]+\]""".toRegex(), "")
+            .replace("""\(\/?[^>]+\)""".toRegex(), "")
+            .replace(""" ([.,:;])""".toRegex(), "$1")
+            .trim()
         }
 
         fun fetchBitmap(queryPart: String): Bitmap {
@@ -90,11 +97,6 @@ class DetailsRetrieval {
             return DishDetails(
                 bitmap = parsedBitmap,
                 description = parsedDescription
-                    .replace("""<\/?[^>]+>""".toRegex(), "")
-                    .replace("""\[\/?[^>]+\]""".toRegex(), "")
-                    .replace("""\(\/?[^>]+\)""".toRegex(), "")
-                    .replace(""" {2,}""".toRegex(), " ")
-                    .replace(""" ([.,:;])""".toRegex(), "$1")
             );
         }
 

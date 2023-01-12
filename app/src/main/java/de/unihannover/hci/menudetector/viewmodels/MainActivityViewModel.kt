@@ -18,9 +18,8 @@ private val MOCKED_DISHES: List<Dish> = listOf(
     DishBuilder("Flammkuchen Elsässer Art", 5.99).build(),
     DishBuilder("Currywurst", 6.96).build(),
     DishBuilder("Spaghetti Bolognese", 7.99).build(),
-    DishBuilder("Eisbein mit Sauerkraut", 13.99).build(),
+    DishBuilder("Schweinshaxe mit Sauerkraut", 13.99).build(),
     DishBuilder("Köfte-Spieß", 5.99).build(),                       // Class C: Rare compound word
-    DishBuilder("Rumpsteak mit Steakhouse Fries", 4.99).build(),    // TODO: Multiple component info for manifold combination dishes?
     DishBuilder("Wiener Schnitzel", 12.49).build(),
     DishBuilder("Waffeln mit Sahne", 5.99).build(),
     DishBuilder("Tiramisu", 3.00).build(),
@@ -31,7 +30,7 @@ class MainActivityViewModel : ViewModel() {
 
     /* ATTRIBUTES */
 
-    private val dishRepository: DishRepository = DishRepository(listOf())
+    private val dishRepository: DishRepository = DishRepository(MOCKED_DISHES)
 
     val menu: List<Dish>
         get() = dishRepository.dishes
