@@ -131,7 +131,14 @@ class MenuImageAnalyzer : ImageAnalysis.Analyzer {
             it.recognizedLanguage
         }.eachCount()
 
-        return languageFrequencies.maxBy { it.value }.key
+        val identifiedLanguage: String = languageFrequencies.maxBy { it.value }.key
+
+        // Temporary workaround: Prevent false detection of dutch language
+        if (identifiedLanguage == "nl") {
+            return "de"
+        } else {
+            return identifiedLanguage
+        }
     }
 
     private fun identifyDishes(text: Text): List<DishRecognitionResult> {

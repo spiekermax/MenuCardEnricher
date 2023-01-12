@@ -47,7 +47,7 @@
         app:srcCompat="@drawable/ic_back_white"
         app:tint="@color/white" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!--com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_order"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,18 +59,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_order_white"
-        app:tint="@color/white" />
+        app:tint="@color/white" /-->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="16dp"
         android:contentDescription="@null"
         app:backgroundTint="@color/purple_500"
         app:fabSize="mini"
-        app:layout_constraintEnd_toStartOf="@id/button_order"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_menu_white"
         app:tint="@color/white" />
@@ -100,7 +100,7 @@
         app:fabSize="mini"
         app:layout_constraintEnd_toStartOf="@id/button_settings"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_info"
+        app:srcCompat="@drawable/ic_help"
         app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

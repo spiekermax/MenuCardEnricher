@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="?attr/actionButtonStyle"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:clipToPadding="false"
     android:clickable="false"
+    android:clipToPadding="false"
     android:focusable="true">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_order_white"
+        android:background="@android:color/transparent"
         android:clickable="false"
-        android:contentDescription="@null" />
+        android:contentDescription="@null"
+        android:src="@drawable/ic_order_white"
+        app:tint="?android:attr/textColorSecondary" />
 
     <TextView
         android:id="@+id/dish_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end|top"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="-5dp"
+        android:background="@drawable/badge_background"
+        android:clickable="false"
+        android:gravity="center"
         android:minWidth="20dp"
         android:minHeight="20dp"
-        android:layout_gravity="end|top"
-        android:layout_marginEnd="-5dp"
-        android:layout_marginTop="3dp"
-        android:background="@drawable/badge_background"
-        android:gravity="center"
         android:padding="3dp"
-        android:textColor="@android:color/white"
-        android:clickable="false"
         android:text="0"
-        android:textSize="10sp"/>
+        android:textColor="@android:color/white"
+        android:textSize="10sp" />
 
 </FrameLayout>

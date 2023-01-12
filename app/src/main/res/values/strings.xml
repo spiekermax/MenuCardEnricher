@@ -1,29 +1,17 @@
 <resources>
-    <string name="app_name">MenuDetector</string>
 
-    <string-array name="languages">
-        <item>English</item>
-        <item>French</item>
-        <item>German</item>
-        <item>Italian</item>
-        <item>Korean</item>
-        <item>Chinese</item>
+    <string name="app_name">Scanue</string>
+
+    <string-array name="currencies">
+        <item>Euro (€)</item>
+        <item>Dollar ($)</item>
+        <item>Pound (£)</item>
+        <item>Yen (¥)</item>
     </string-array>
 
-
-    <string-array name="currency">
-        <item>Euro</item>
-        <item>Dollar</item>
-        <item>Pound</item>
-        <item>Yen</item>
+    <string-array name="weight_systems">
+        <item>kg/g</item>
+        <item>lbs</item>
     </string-array>
-
-
-    <string-array name="weight">
-        <item>Kg/g</item>
-        <item>Lbs</item>
-    </string-array>
-
-
 
 </resources>

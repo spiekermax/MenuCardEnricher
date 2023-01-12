@@ -4,7 +4,6 @@ package de.unihannover.hci.menudetector.fragments
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -28,6 +27,7 @@ import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.adapters.RecyclerViewDishAdapter
 import de.unihannover.hci.menudetector.services.TranslateAndSpeak
 import de.unihannover.hci.menudetector.models.Dish
+import de.unihannover.hci.menudetector.util.formatPrice
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import java.util.*
 
@@ -42,7 +42,7 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
     private val viewModel by activityViewModels<MainActivityViewModel>()
     lateinit var sharedPreferences: SharedPreferences
     private lateinit var navController: NavController
-    private  lateinit var tas : TranslateAndSpeak
+    private lateinit var tas: TranslateAndSpeak
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,22 +51,23 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         navController = findNavController()
 
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val totalOrder: TextView= view.findViewById(R.id.text_total)
-        bindToolbarMenu(view)
+        val totalOrder: TextView = view.findViewById(R.id.text_total)
+        bindToolbarMenu()
         sharedPreferences = activity?.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
         val targetLanguageIndex = sharedPreferences.getInt("LANGUAGE", 0)
 
         val order: List<Dish> = viewModel.order
         val recyclerViewAdapter = RecyclerViewDishAdapter(order)
-        val locales: List<Locale> = Locale.getAvailableLocales().asList().distinctBy { it.language}
-        tas = TranslateAndSpeak(Locale.GERMAN,locales[targetLanguageIndex])
+        val locales: List<Locale> = Locale.getAvailableLocales().asList().distinctBy { it.language }
+        tas = TranslateAndSpeak(Locale.GERMAN, locales[targetLanguageIndex])
         val sayItButton: MaterialButton = view.findViewById(R.id.button_say_it)
 
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
-        if(order.isEmpty()){
+        if (order.isEmpty()) {
             sayItButton.isEnabled = false
             sayItButton.isClickable = false
         }
@@ -87,10 +88,10 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         }
 
         recyclerViewAdapter.incrementCountListener = {
-            val totalOrder: TextView= view.findViewById(R.id.text_total)
+            val totalOrder: TextView = view.findViewById(R.id.text_total)
             viewModel.updateDish(it.copy(quantity = it.quantity + 1))
             totalOrder.text = calculateTotal()
-            if(viewModel.order.isEmpty()){
+            if (viewModel.order.isEmpty()) {
                 sayItButton.isEnabled = false
                 sayItButton.isClickable = false
             }
@@ -98,11 +99,11 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         }
 
         recyclerViewAdapter.decrementCountListener = {
-            val totalOrder: TextView= view.findViewById(R.id.text_total)
+            val totalOrder: TextView = view.findViewById(R.id.text_total)
             if (it.quantity > 0) {
                 viewModel.updateDish(it.copy(quantity = it.quantity - 1))
                 totalOrder.text = calculateTotal()
-                if(viewModel.order.isEmpty()){
+                if (viewModel.order.isEmpty()) {
                     sayItButton.isEnabled = false
                     sayItButton.isClickable = false
                 }
@@ -111,7 +112,7 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
                     .setAction("Dismiss") {}
                     .show()
                 totalOrder.text = calculateTotal()
-                if(viewModel.order.isEmpty()){
+                if (viewModel.order.isEmpty()) {
                     sayItButton.isEnabled = false
                     sayItButton.isClickable = false
                 }
@@ -120,7 +121,7 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
         recyclerViewAdapter.sayItListener = {
             val dishName = it.name
-            tas.speak(requireContext(),dishName)
+            tas.speak(requireContext(), dishName)
         }
 
         sayItButton.setOnClickListener {
@@ -131,18 +132,21 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
     /* METHODS */
 
-    private fun bindToolbarMenu(view: View) {
+    private fun bindToolbarMenu() {
         requireActivity().addMenuProvider(object : MenuProvider {
-
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.order_fragment, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.menu1 -> {
-                        viewModel.removeAllDishes()
-                        val totalOrder: TextView= view.findViewById(R.id.text_total)
+                    R.id.help -> {
+                        navController.navigate(R.id.action_orderFragment_to_orderInfo)
+                        true
+                    }
+                    R.id.clear -> {
+                        viewModel.removeAllDishesFromOrder()
+                        val totalOrder: TextView = requireView().findViewById(R.id.text_total)
                         totalOrder.text = calculateTotal()
                         true
                     }
@@ -152,11 +156,11 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-     private  fun calculateTotal(): String {
+    private fun calculateTotal(): String {
         var totalSum = 0.0
-        for (dish in viewModel.order){
-            totalSum+= (dish.quantity * dish.price)
+        for (dish in viewModel.order) {
+            totalSum += (dish.quantity * dish.price)
         }
-        return "Total: "+ String.format("%.2f", totalSum) + "€"
+        return "Total: " + formatPrice(totalSum)
     }
 }

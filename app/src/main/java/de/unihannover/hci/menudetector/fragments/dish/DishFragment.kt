@@ -7,13 +7,18 @@ import android.content.Context
 import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -23,6 +28,7 @@ import de.unihannover.hci.menudetector.MainActivity
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.models.DishDetails
+import de.unihannover.hci.menudetector.util.formatPrice
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,8 +39,9 @@ import kotlinx.coroutines.launch
 /**
  * TODO:
  * - Add dish details to incoming dishes without details field set
- * - Show image from dish details and other information
- * - Optional: Description
+ * - Show dish details and other information
+ * - Description
+ * - Optional: Image
  */
 class DishFragment : Fragment(R.layout.fragment_dish) {
 
@@ -106,7 +113,7 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
         view?.findViewById<ProgressBar>(R.id.progressBar)?.setVisibility(View.GONE)
 
         view?.findViewById<TextView>(R.id.text_name)?.setText(dish.name)
-        view?.findViewById<TextView>(R.id.text_price)?.setText(dish.price.toString() + " €")    // TODO: Adopt currency
+        view?.findViewById<TextView>(R.id.text_price)?.setText(formatPrice(dish.price))    // TODO: Adopt currency
 
         var addButton: FloatingActionButton? = view?.findViewById(R.id.button_add)
         addButton?.setOnClickListener(null)

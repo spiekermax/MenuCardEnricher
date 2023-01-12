@@ -40,6 +40,7 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
     private lateinit var cameraPreviewView: PreviewView
     private lateinit var graphicOverlayView: GraphicOverlayView
 
+    private lateinit var backButton: FloatingActionButton
     private lateinit var takePictureButton: FloatingActionButton
 
     private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
@@ -54,7 +55,8 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         set(value) {
             menuChanges.value = value
         }
-    private val menuChanges: MutableLiveData<MenuRecognitionResult> = MutableLiveData(MenuRecognitionResult())
+    private val menuChanges: MutableLiveData<MenuRecognitionResult> =
+        MutableLiveData(MenuRecognitionResult())
 
 
     /* LIFECYCLE */
@@ -80,6 +82,12 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         super.onResume()
 
         (activity as AppCompatActivity?)?.supportActionBar?.hide()
+
+        if (navController.previousBackStackEntry == null) {
+            backButton.visibility = View.GONE
+        } else {
+            backButton.visibility = View.VISIBLE
+        }
 
         menuChanges.value = MenuRecognitionResult()
     }
@@ -159,6 +167,7 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         cameraPreviewView = view.findViewById(R.id.camera_preview)
         graphicOverlayView = view.findViewById(R.id.graphic_overlay)
 
+        backButton = view.findViewById(R.id.button_back)
         takePictureButton = view.findViewById(R.id.button_take_picture)
     }
 
@@ -172,8 +181,8 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         val menuButton: FloatingActionButton = view.findViewById(R.id.button_menu)
         menuButton.setOnClickListener { onMenuClicked() }
 
-        val orderButton: FloatingActionButton = view.findViewById(R.id.button_order)
-        orderButton.setOnClickListener { onOrderClicked() }
+        // val orderButton: FloatingActionButton = view.findViewById(R.id.button_order)
+        // orderButton.setOnClickListener { onOrderClicked() }
 
         val infoButton: FloatingActionButton = view.findViewById(R.id.button_info)
         infoButton.setOnClickListener { onInfoClicked() }

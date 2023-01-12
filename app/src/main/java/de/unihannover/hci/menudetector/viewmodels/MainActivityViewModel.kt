@@ -31,7 +31,7 @@ class MainActivityViewModel : ViewModel() {
 
     /* ATTRIBUTES */
 
-    private val dishRepository: DishRepository = DishRepository(MOCKED_DISHES)
+    private val dishRepository: DishRepository = DishRepository(listOf())
 
     val menu: List<Dish>
         get() = dishRepository.dishes
@@ -59,19 +59,11 @@ class MainActivityViewModel : ViewModel() {
     fun putDish(dish: Dish) = dishRepository.putDish(dish)
     fun updateDish(dish: Dish) = dishRepository.updateDish(dish)
     fun removeDish(dish: Dish) = dishRepository.removeDish(dish)
-    fun removeAllDishes() {
+
+    fun removeAllDishesFromOrder() {
         for (dish in order) {
-            this.updateDish(dish.copy(quantity = 0));
+            this.updateDish(dish.copy(quantity = 0))
         }
-    }
-
-    fun deleteDish(index: Int) {
-        _preview.value = _preview.value?.toMutableList()?.apply { removeAt(index) }
-    }
-
-    fun editDish(index: Int, name: String , price: Double) {
-        val newDish = DishBuilder(name, price).build()
-        _preview.value = _preview.value?.toMutableList()?.apply { set(index, newDish)}
     }
 
 }

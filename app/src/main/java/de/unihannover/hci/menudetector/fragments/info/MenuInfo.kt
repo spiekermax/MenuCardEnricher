@@ -17,12 +17,13 @@ class MenuInfo: DialogFragment() {
     ): View? {
         var rootView: View= inflater.inflate(R.layout.fragment_info_menu,container,false)
 
-        val closeButton: MaterialButton = rootView.findViewById(R.id.info_menu_close_btn)
+        val closeButton: MaterialButton = rootView.findViewById(R.id.close_button)
         closeButton.setOnClickListener {
             dismiss()
         }
         return rootView
     }
 
+    override fun getTheme() = R.style.Theme_MenuDetector_RoundedCornersDialog
 
 }
