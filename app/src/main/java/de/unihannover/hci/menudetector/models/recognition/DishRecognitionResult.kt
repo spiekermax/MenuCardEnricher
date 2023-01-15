@@ -12,6 +12,7 @@ import android.os.Parcelable
 data class DishRecognitionResult(
     val name: String,
     val price: Double,
+    val language: String?,
     val boundingBox: Rect,
     val confidence: Float,
 ) : Parcelable

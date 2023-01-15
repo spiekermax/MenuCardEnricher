@@ -13,17 +13,17 @@ import de.unihannover.hci.menudetector.models.DishRepository
 
 private val MOCKED_DISHES: List<Dish> = listOf(
     // Willkommen im Restaurant “Aus aller Welt”
-    DishBuilder("Minestrone", 6.49).build(),                        // Class A: One word
-    DishBuilder("Griechischer Salat", 3.99).build(),                // Class B: Multiple Words
-    DishBuilder("Flammkuchen Elsässer Art", 5.99).build(),
-    DishBuilder("Currywurst", 6.96).build(),
-    DishBuilder("Spaghetti Bolognese", 7.99).build(),
-    DishBuilder("Schweinshaxe mit Sauerkraut", 13.99).build(),
-    DishBuilder("Köfte-Spieß", 5.99).build(),                       // Class C: Rare compound word
-    DishBuilder("Wiener Schnitzel", 12.49).build(),
-    DishBuilder("Waffeln mit Sahne", 5.99).build(),
-    DishBuilder("Tiramisu", 3.00).build(),
-    DishBuilder("Crème Brûlée", 3.00).build(),                      // Class D: Word(s) with special charatcers
+    DishBuilder("Minestrone", "Example entry", 6.49).build(),                        // Class A: One word
+    DishBuilder("Griechischer Salat", "Example entry", 3.99).build(),                // Class B: Multiple Words
+    DishBuilder("Flammkuchen Elsässer Art", "Example entry", 5.99).build(),
+    DishBuilder("Currywurst", "Example entry", 6.96).build(),
+    DishBuilder("Spaghetti Bolognese", "Example entry", 7.99).build(),
+    DishBuilder("Schweinshaxe mit Sauerkraut", "Example entry", 13.99).build(),
+    DishBuilder("Köfte-Spieß", "Example entry", 5.99).build(),                       // Class C: Rare compound word
+    DishBuilder("Wiener Schnitzel", "Example entry", 12.49).build(),
+    DishBuilder("Waffeln mit Sahne", "Example entry", 5.99).build(),
+    DishBuilder("Tiramisu", "Example entry", 3.00).build(),
+    DishBuilder("Crème Brûlée", "Example entry", 3.00).build(),                      // Class D: Word(s) with special charatcers
 )
 
 class MainActivityViewModel : ViewModel() {

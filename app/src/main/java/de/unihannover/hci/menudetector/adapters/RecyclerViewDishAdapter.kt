@@ -52,6 +52,7 @@ class RecyclerViewDishAdapter(
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val titleTextView: TextView
+        val subtitleTextView: TextView
         val priceTextView: TextView
         val quantityTextView: TextView
 
@@ -64,6 +65,7 @@ class RecyclerViewDishAdapter(
 
         init {
             titleTextView = view.findViewById(R.id.text_title)
+            subtitleTextView = view.findViewById(R.id.text_subtitle)
             priceTextView = view.findViewById(R.id.text_price)
             quantityTextView = view.findViewById(R.id.text_quantity)
 
@@ -151,10 +153,12 @@ class RecyclerViewDishAdapter(
         val dish: Dish = differ.currentList[position]
 
         val name = dish.name
+        val originalName = dish.originalName
         val price = "${dish.price}€"
         val quantity = "${dish.quantity}"
 
         viewHolder.titleTextView.text = name
+        viewHolder.subtitleTextView.text = originalName
         viewHolder.priceTextView.text = price
         viewHolder.quantityTextView.text = quantity
 

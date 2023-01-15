@@ -17,7 +17,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -95,6 +94,7 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
         val recyclerViewAdapter = RecyclerViewDishAdapter(
             menu ?: listOf(),
+            showImage = false,
             showQuantity = false,
             isQuantityEditable = false,
             isDishModifiable = true,
@@ -152,7 +152,10 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
                 .setPositiveButton("Save") { dialog, _ ->
                     menu = (menu ?: listOf()).map { dish ->
                         if (dish.id == it.id) {
-                            DishBuilder(dishName.text.toString(), dishPrice.text.toString().toDouble()).id(dish.id).build()
+                            dish.copy(
+                                name = dishName.text.toString(),
+                                price = dishPrice.text.toString().toDouble()
+                            )
                         } else {
                             dish
                         }
@@ -170,15 +173,20 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
             val editTexts = listOf(dishName, dishPrice)
             for (editText in editTexts) {
                 editText.addTextChangedListener(object : TextWatcher {
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    override fun onTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
                         val etDishName = dishName.text.toString().trim()
                         val etDishPrice = dishPrice.text.toString().trim()
 
-                        if(etDishName.isEmpty()){
+                        if (etDishName.isEmpty()) {
                             dishName.error = "The name of a dish cannot be empty!"
                             positiveButton.isEnabled = false
-                        } else if(etDishPrice.isEmpty()) {
-                            dishPrice.error ="The price of a dish cannot be empty!"
+                        } else if (etDishPrice.isEmpty()) {
+                            dishPrice.error = "The price of a dish cannot be empty!"
                             positiveButton.isEnabled = false
                         } else {
                             positiveButton.isEnabled = true
@@ -186,11 +194,13 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
                     }
 
                     override fun beforeTextChanged(
-                        s: CharSequence, start: Int, count: Int, after: Int) {
+                        s: CharSequence, start: Int, count: Int, after: Int
+                    ) {
                     }
 
                     override fun afterTextChanged(
-                        s: Editable) {
+                        s: Editable
+                    ) {
                     }
                 })
             }
@@ -205,7 +215,7 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
 
         return if (recognizedMenu.language == null) {
             untranslatedDishes.map {
-                DishBuilder(it.name, it.price).build()
+                DishBuilder(it.name, it.name, it.price).build()
             }
         } else {
             untranslatedDishes.map {
@@ -215,7 +225,7 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
                     sourceLanguage = recognizedMenu.language,
                 )
 
-                DishBuilder(translatedName, convertedPrice).build()
+                DishBuilder(translatedName, it.name, convertedPrice).build()
             }
         }
     }

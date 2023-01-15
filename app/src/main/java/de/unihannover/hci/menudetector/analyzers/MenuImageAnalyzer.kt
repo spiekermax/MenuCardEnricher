@@ -171,6 +171,9 @@ class MenuImageAnalyzer : ImageAnalysis.Analyzer {
 
             if (match != null) {
                 val name: String = match.text
+                val language: String? = if (isLanguageSupported(match.recognizedLanguage)) {
+                    match.recognizedLanguage
+                } else null
 
                 val combinedBoundingBox = Rect(match.boundingBox)
                 combinedBoundingBox.union(boundingBox)
@@ -179,6 +182,7 @@ class MenuImageAnalyzer : ImageAnalysis.Analyzer {
                 dishes.add(DishRecognitionResult(
                     name = name,
                     price = priceValue,
+                    language = language,
                     boundingBox = combinedBoundingBox,
                     confidence = combinedConfidence,
                 ))
@@ -201,6 +205,9 @@ class MenuImageAnalyzer : ImageAnalysis.Analyzer {
             if (match == null) continue
 
             val name: String = match.text
+            val language: String? = if (isLanguageSupported(match.recognizedLanguage)) {
+                match.recognizedLanguage
+            } else null
 
             val combinedBoundingBox = Rect(match.boundingBox)
             combinedBoundingBox.union(boundingBox)
@@ -209,6 +216,7 @@ class MenuImageAnalyzer : ImageAnalysis.Analyzer {
             dishes.add(DishRecognitionResult(
                 name = name,
                 price = priceValue,
+                language = language,
                 boundingBox = combinedBoundingBox,
                 confidence = combinedConfidence,
             ))
