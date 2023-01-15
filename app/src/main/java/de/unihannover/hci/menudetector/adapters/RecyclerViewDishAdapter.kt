@@ -156,7 +156,7 @@ class RecyclerViewDishAdapter(
 
         val name = dish.name
         val originalName = dish.originalName
-        val price = formatPrice(dish.price, dish.language)
+        val price = formatPrice(dish.price, dish.currency, dish.language)
         val quantity = "${dish.quantity}"
 
         viewHolder.titleTextView.text = name
@@ -185,7 +185,7 @@ class RecyclerViewDishAdapter(
 
     /* UTILITY */
 
-    private fun formatPrice(price: Double, language: String?): String {
+    private fun formatPrice(price: Double, currency: String, language: String?): String {
         val locale: Locale? = if (language != null) Locale(language) else null
 
         val formatter = if (locale != null) {
@@ -194,7 +194,7 @@ class RecyclerViewDishAdapter(
             NumberFormat.getCurrencyInstance()
         }
 
-        formatter.currency = Currency.getInstance("EUR")
+        formatter.currency = Currency.getInstance(currency)
 
         return formatter.format(price)
     }

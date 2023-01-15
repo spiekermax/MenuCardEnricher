@@ -15,6 +15,8 @@ data class Dish(
 
     val name: String,
     val originalName: String,
+
+    val currency: String,
     val language: String?,
 
     @FloatRange(from = 0.0)

@@ -41,6 +41,7 @@ import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.models.DishBuilder
 import de.unihannover.hci.menudetector.models.recognition.DishRecognitionResult
 import de.unihannover.hci.menudetector.models.recognition.MenuRecognitionResult
+import de.unihannover.hci.menudetector.services.CurrencyService
 import de.unihannover.hci.menudetector.services.TranslationService
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 
@@ -54,6 +55,9 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
 
     private lateinit var navController: NavController
 
+    private val currencyService by lazy {
+        CurrencyService(requireContext())
+    }
     private val translationService by lazy {
         TranslationService(requireContext(), lifecycle)
     }
@@ -82,7 +86,7 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
 
         val recognizedMenu: MenuRecognitionResult = args.recognizedMenu ?: MenuRecognitionResult()
         lifecycleScope.launch {
-            val translation = async { translateRecognizedMenu(recognizedMenu) }
+            val translation = async { localizeRecognizedMenu(recognizedMenu) }
             val delay = async { delay(1000) }
 
             val (translationResult) = awaitAll(translation, delay)
@@ -210,22 +214,28 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
 
     /* METHODS */
 
-    private suspend fun translateRecognizedMenu(recognizedMenu: MenuRecognitionResult): List<Dish> {
-        val untranslatedDishes: List<DishRecognitionResult> = recognizedMenu.dishes
+    private suspend fun localizeRecognizedMenu(recognizedMenu: MenuRecognitionResult): List<Dish> {
+        val unlocalizedDishes: List<DishRecognitionResult> = recognizedMenu.dishes
 
         return if (recognizedMenu.language == null) {
-            untranslatedDishes.map {
-                DishBuilder(it.name, it.name, it.price).build()
+            unlocalizedDishes.map {
+                val convertedPrice = currencyService.convertIntoAppCurrency(it.price, it.currency)
+                DishBuilder(it.name, it.name, currencyService.appCurrency, convertedPrice).build()
             }
         } else {
-            untranslatedDishes.map {
-                val convertedPrice = it.price
+            unlocalizedDishes.map {
+                val convertedPrice = currencyService.convertIntoAppCurrency(it.price, it.currency)
                 val translatedName = translationService.translateIntoAppLanguage(
                     text = it.name,
                     sourceLanguage = recognizedMenu.language,
                 )
 
-                DishBuilder(translatedName, it.name, convertedPrice).build()
+                DishBuilder(
+                    translatedName,
+                    it.name,
+                    currencyService.appCurrency,
+                    convertedPrice,
+                ).build()
             }
         }
     }

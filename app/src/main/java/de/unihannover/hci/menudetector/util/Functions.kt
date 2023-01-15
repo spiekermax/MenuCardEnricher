@@ -1,14 +1,8 @@
 package de.unihannover.hci.menudetector.util
 
 // Android
-import android.content.Context
-import android.preference.PreferenceManager
-import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import de.unihannover.hci.menudetector.models.Price
-import java.lang.ref.WeakReference
 
 
 @Suppress("UNCHECKED_CAST")

@@ -7,6 +7,7 @@ import java.util.UUID
 class DishBuilder(
     private val name: String,
     private val originalName: String,
+    private val currency: String,
     private val price: Double,
 ) {
 
@@ -25,6 +26,6 @@ class DishBuilder(
     fun quantity(quantity: Int) = apply { this.quantity = quantity }
     fun details(details: DishDetails?) = apply { this.details = details }
 
-    fun build() = Dish(id, name, originalName, language, price, quantity, details)
+    fun build() = Dish(id, name, originalName, currency, language, price, quantity, details)
 
 }

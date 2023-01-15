@@ -28,8 +28,10 @@ import de.unihannover.hci.menudetector.util.Constants
 
 
 private const val LINE_MATCHING_TOLERANCE: Float = 0.75f
+private const val DEFAULT_CURRENCY: String = "EUR"
 
-private val PRICE_REGEX: Regex = Regex("(USD|EUR|€|\\\$)\\s?(\\d{1,3}(?:[.,]\\d{3})*[.,]\\d{2})|(\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})?)\\s?(USD|EUR|€|\\\$)")
+private val PRICE_REGEX: Regex =
+    Regex("(USD|EUR|€|\\\$)\\s?(\\d{1,3}(?:[.,]\\d{3})*[.,]\\d{2})|(\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})?)\\s?(USD|EUR|€|\\\$)")
 private val CURRENCY_REGEX: Regex = Regex("(USD|EUR|€|\\\$)")
 
 class MenuImageAnalyzer : ImageAnalysis.Analyzer {
@@ -175,17 +177,28 @@ class MenuImageAnalyzer : ImageAnalysis.Analyzer {
                     match.recognizedLanguage
                 } else null
 
+                val currency: String = when (CURRENCY_REGEX.find(price.text)?.value) {
+                    "EUR" -> "EUR"
+                    "€" -> "EUR"
+                    "USD" -> "USD"
+                    "$" -> "USD"
+                    else -> DEFAULT_CURRENCY
+                }
+
                 val combinedBoundingBox = Rect(match.boundingBox)
                 combinedBoundingBox.union(boundingBox)
                 val combinedConfidence = match.confidence * price.confidence
 
-                dishes.add(DishRecognitionResult(
-                    name = name,
-                    price = priceValue,
-                    language = language,
-                    boundingBox = combinedBoundingBox,
-                    confidence = combinedConfidence,
-                ))
+                dishes.add(
+                    DishRecognitionResult(
+                        name = name,
+                        price = priceValue,
+                        currency = currency,
+                        language = language,
+                        boundingBox = combinedBoundingBox,
+                        confidence = combinedConfidence,
+                    )
+                )
 
                 continue
             }
@@ -209,17 +222,28 @@ class MenuImageAnalyzer : ImageAnalysis.Analyzer {
                 match.recognizedLanguage
             } else null
 
+            val currency: String = when (CURRENCY_REGEX.find(price.text)?.value) {
+                "EUR" -> "EUR"
+                "€" -> "EUR"
+                "USD" -> "USD"
+                "$" -> "USD"
+                else -> DEFAULT_CURRENCY
+            }
+
             val combinedBoundingBox = Rect(match.boundingBox)
             combinedBoundingBox.union(boundingBox)
             val combinedConfidence = match.confidence * price.confidence
 
-            dishes.add(DishRecognitionResult(
-                name = name,
-                price = priceValue,
-                language = language,
-                boundingBox = combinedBoundingBox,
-                confidence = combinedConfidence,
-            ))
+            dishes.add(
+                DishRecognitionResult(
+                    name = name,
+                    price = priceValue,
+                    currency = currency,
+                    language = language,
+                    boundingBox = combinedBoundingBox,
+                    confidence = combinedConfidence,
+                )
+            )
         }
 
         return dishes

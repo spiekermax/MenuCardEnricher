@@ -41,7 +41,7 @@ class TranslationService(val context: Context, private val lifecycle: Lifecycle)
         Constants.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE,
     )
 
-    private val appLanguage: String
+    val appLanguage: String
         get() {
             val preferredLanguage: String? = sharedPreferences.getString(Constants.SHARED_PREFERENCES_LANGUAGE_KEY, null)
 
