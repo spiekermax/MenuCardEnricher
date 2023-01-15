@@ -18,6 +18,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 // Internal dependencies
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.models.Dish
+import java.text.NumberFormat
+import java.util.*
 
 
 class RecyclerViewDishAdapter(
@@ -154,7 +156,7 @@ class RecyclerViewDishAdapter(
 
         val name = dish.name
         val originalName = dish.originalName
-        val price = "${dish.price}€"
+        val price = formatPrice(dish.price, dish.language)
         val quantity = "${dish.quantity}"
 
         viewHolder.titleTextView.text = name
@@ -178,6 +180,23 @@ class RecyclerViewDishAdapter(
 
     fun updateItems(newDishes: List<Dish>) {
         differ.submitList(newDishes)
+    }
+
+
+    /* UTILITY */
+
+    private fun formatPrice(price: Double, language: String?): String {
+        val locale: Locale? = if (language != null) Locale(language) else null
+
+        val formatter = if (locale != null) {
+            NumberFormat.getCurrencyInstance(locale)
+        } else {
+            NumberFormat.getCurrencyInstance()
+        }
+
+        formatter.currency = Currency.getInstance("EUR")
+
+        return formatter.format(price)
     }
 
 }
