@@ -9,6 +9,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -42,11 +43,13 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
     private lateinit var backButton: FloatingActionButton
     private lateinit var takePictureButton: FloatingActionButton
+    private lateinit var torchButton: FloatingActionButton
 
     private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
     private val cameraExecutor: ExecutorService by lazy {
         Executors.newSingleThreadExecutor()
     }
+    private var camera: Camera? = null
 
     private lateinit var navController: NavController
 
@@ -57,6 +60,13 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         }
     private val menuChanges: MutableLiveData<MenuRecognitionResult> =
         MutableLiveData(MenuRecognitionResult())
+
+    private var isTorchEnabled: Boolean
+        get() = isTorchEnabledChanges.value!!
+        set(value) {
+            isTorchEnabledChanges.value = value
+        }
+    private val isTorchEnabledChanges: MutableLiveData<Boolean> = MutableLiveData(false)
 
 
     /* LIFECYCLE */
@@ -123,10 +133,10 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         navController.navigate(action)
     }
 
-    private fun onOrderClicked() {
-        val action = ScanCameraFragmentDirections.actionScanCameraFragmentToOrderFragment()
-        navController.navigate(action)
-    }
+    // private fun onOrderClicked() {
+    //    val action = ScanCameraFragmentDirections.actionScanCameraFragmentToOrderFragment()
+    //    navController.navigate(action)
+    // }
 
     private fun onTakePictureClicked() {
         val action = ScanCameraFragmentDirections.actionScanCameraFragmentToPreviewFragment(menu)
@@ -136,6 +146,10 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
     private fun onInfoClicked() {
         val action = ScanCameraFragmentDirections.actionScanCameraFragmentToScanInfo()
         navController.navigate(action)
+    }
+
+    private fun onTorchClicked() {
+        isTorchEnabled = !isTorchEnabled
     }
 
     private fun onImagePropertiesChanged(imageProperties: ImageProperties?) {
@@ -169,11 +183,10 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
 
         backButton = view.findViewById(R.id.button_back)
         takePictureButton = view.findViewById(R.id.button_take_picture)
+        torchButton = view.findViewById(R.id.button_torch)
     }
 
     private fun bindViewListeners(view: View) {
-        val backButton: FloatingActionButton = view.findViewById(R.id.button_back)
-        backButton.setOnClickListener { onBackClicked() }
 
         val settingsButton: FloatingActionButton = view.findViewById(R.id.button_settings)
         settingsButton.setOnClickListener { onSettingsClicked() }
@@ -187,12 +200,29 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         val infoButton: FloatingActionButton = view.findViewById(R.id.button_info)
         infoButton.setOnClickListener { onInfoClicked() }
 
+        backButton.setOnClickListener { onBackClicked() }
         takePictureButton.setOnClickListener { onTakePictureClicked() }
+        torchButton.setOnClickListener { onTorchClicked() }
     }
 
     private fun bindListeners() {
         menuChanges.observe(viewLifecycleOwner) {
             takePictureButton.isEnabled = !it.isEmpty()
+        }
+
+        isTorchEnabledChanges.observe(viewLifecycleOwner) {
+            val drawableResource = when(it) {
+                true -> R.drawable.ic_flashlight_off
+                false -> R.drawable.ic_flashlight_on
+            }
+
+            torchButton.setImageResource(drawableResource)
+
+            camera?.apply {
+                if (this.cameraInfo.hasFlashUnit()) {
+                    this.cameraControl.enableTorch(it)
+                }
+            }
         }
     }
 
@@ -224,7 +254,7 @@ class ScanCameraFragment : Fragment(R.layout.fragment_scan_camera) {
         val cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
         cameraProvider.unbindAll()
-        cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis)
+        this.camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis)
     }
 
 }

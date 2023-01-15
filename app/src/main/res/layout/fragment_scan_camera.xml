@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -37,8 +36,8 @@
         android:id="@+id/button_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:contentDescription="@null"
         app:backgroundTint="@color/purple_700"
         app:fabSize="mini"
@@ -93,14 +92,30 @@
         android:id="@+id/button_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
         android:contentDescription="@null"
-        app:backgroundTint="@color/purple_500"
+        app:backgroundTint="@color/teal_700"
+        app:elevation="0dp"
         app:fabSize="mini"
-        app:layout_constraintEnd_toStartOf="@id/button_settings"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/button_take_picture"
+        app:layout_constraintEnd_toEndOf="@id/button_take_picture"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/button_take_picture"
         app:srcCompat="@drawable/ic_help"
+        app:tint="@color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_torch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        app:backgroundTint="@color/teal_700"
+        app:elevation="0dp"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@id/button_take_picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/button_take_picture"
+        app:layout_constraintTop_toTopOf="@id/button_take_picture"
+        app:srcCompat="@drawable/ic_flashlight_on"
         app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
