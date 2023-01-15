@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation_main"
-    app:startDestination="@id/scanPermissionsFragment">
+    app:startDestination="@id/welcomeFragment">
 
     <fragment
         android:id="@+id/tempNavigationFragment"
@@ -160,7 +159,7 @@
     <fragment
         android:id="@+id/SettingsInfo"
         android:name="de.unihannover.hci.menudetector.fragments.info.SettingsInfo"
-        android:label="DialogFragment" >
+        android:label="DialogFragment">
         <action
             android:id="@+id/action_SettingsInfo_to_settingsFragment"
             app:destination="@id/settingsFragment" />
@@ -176,7 +175,7 @@
     <dialog
         android:id="@+id/scanInfo"
         android:name="de.unihannover.hci.menudetector.fragments.info.ScanInfo"
-        android:label="ScanInfo" >
+        android:label="ScanInfo">
         <action
             android:id="@+id/action_scanInfo_to_scanCameraFragment"
             app:destination="@id/scanCameraFragment" />
@@ -184,7 +183,7 @@
     <dialog
         android:id="@+id/orderInfo"
         android:name="de.unihannover.hci.menudetector.fragments.info.OrderInfo"
-        android:label="OrderInfo" >
+        android:label="OrderInfo">
         <action
             android:id="@+id/action_orderInfo_to_orderFragment"
             app:destination="@id/orderFragment" />
@@ -192,10 +191,20 @@
     <dialog
         android:id="@+id/previewInfo"
         android:name="de.unihannover.hci.menudetector.fragments.info.PreviewInfo"
-        android:label="PreviewInfo" >
+        android:label="PreviewInfo">
         <action
             android:id="@+id/action_previewInfo_to_previewFragment"
             app:destination="@id/previewFragment" />
     </dialog>
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="de.unihannover.hci.menudetector.fragments.WelcomeFragment"
+        android:label="Welcome">
+        <action
+            android:id="@+id/action_welcomeFragment_to_scanPermissionsFragment"
+            app:destination="@id/scanPermissionsFragment"
+            app:popUpTo="@id/welcomeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>
