@@ -1,6 +1,8 @@
 package de.unihannover.hci.menudetector.adapters
 
 // Android
+import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +16,19 @@ import androidx.recyclerview.widget.RecyclerView
 // Glide
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 
 // Internal dependencies
 import de.unihannover.hci.menudetector.R
+import de.unihannover.hci.menudetector.fragments.dish.DetailsRetrieval
 import de.unihannover.hci.menudetector.models.Dish
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.*
+import kotlin.coroutines.suspendCoroutine
 
 
 class RecyclerViewDishAdapter(
@@ -165,13 +174,21 @@ class RecyclerViewDishAdapter(
         viewHolder.priceTextView.text = price
         viewHolder.quantityTextView.text = quantity
 
-        Glide.with(viewHolder.itemView.context)
-            .load("https://pkmlimo.depok.go.id/assets/images/default.jpg")
-            .placeholder(R.drawable.placeholder)
-            .override(225, 225)
-            .centerCrop()
-            .transform(RoundedCorners(20))
-            .into(viewHolder.previewImageView)
+        if (showImage) {
+            CoroutineScope(Dispatchers.Main).launch {
+                val imageUrl = DetailsRetrieval.fetchImageUrl(dish)
+
+                val width = (96 * Resources.getSystem().displayMetrics.density).toInt()
+                val height = (84 * Resources.getSystem().displayMetrics.density).toInt()
+                Glide.with(viewHolder.itemView.context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .override(width, height)
+                    .centerCrop()
+                    .transform(RoundedCorners(20))
+                    .into(viewHolder.previewImageView)
+            }
+        }
     }
 
 

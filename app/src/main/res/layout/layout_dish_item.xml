@@ -18,14 +18,21 @@
 
         <ImageView
             android:id="@+id/preview_image"
-            android:layout_width="wrap_content"
-            android:layout_height="96dp"
+            android:layout_width="94dp"
+            android:layout_height="84dp"
             android:layout_margin="16dp"
             android:contentDescription="@null"
+            android:background="@drawable/mask_rounded_all"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            tools:background="@drawable/mask_rounded_all"
+            tools:clipToOutline="true"
+            tools:outlineProvider="background"
+            android:src="@drawable/placeholder"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@android:color/darker_gray"
             tools:layout_height="84dp"
             tools:layout_width="96dp" />
 
