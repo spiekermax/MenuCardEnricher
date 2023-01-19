@@ -50,16 +50,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:drawablePadding="12dp"
-            android:text="View your order"
-            android:textSize="16sp"
-            app:drawableStartCompat="@drawable/ic_order_black"
-            app:drawableTint="?attr/colorOnSurface" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:drawablePadding="12dp"
             android:text="Adjust your settings"
             android:textSize="16sp"
             app:drawableStartCompat="@drawable/ic_settings_black"
