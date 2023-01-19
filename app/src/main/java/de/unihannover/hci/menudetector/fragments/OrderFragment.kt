@@ -96,6 +96,7 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
         viewModel.orderChanges.observe(viewLifecycleOwner) {
             recyclerViewAdapter.updateItems(it)
+            view.findViewById<View>(R.id.no_data).visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
         }
 
         recyclerViewAdapter.clickListener = {

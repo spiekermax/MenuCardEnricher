@@ -80,6 +80,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
         viewModel.menuChanges.observe(viewLifecycleOwner) {
             recyclerViewAdapter.updateItems(it)
+            view.findViewById<View>(R.id.no_data).visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
         }
 
         recyclerViewAdapter.clickListener = {

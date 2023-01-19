@@ -59,13 +59,21 @@
         android:label="Menu">
         <action
             android:id="@+id/action_menuFragment_to_orderFragment"
-            app:destination="@id/orderFragment" />
+            app:destination="@id/orderFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
         <action
             android:id="@+id/action_menuFragment_to_scanPermissionsFragment"
             app:destination="@id/scanPermissionsFragment" />
         <action
             android:id="@+id/action_menuFragment_to_dishFragment"
-            app:destination="@id/dishFragment">
+            app:destination="@id/dishFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right">
             <argument
                 android:name="dishID"
                 app:argType="string" />
@@ -81,7 +89,11 @@
         android:label="Order">
         <action
             android:id="@+id/action_orderFragment_to_dishFragment"
-            app:destination="@id/dishFragment" />
+            app:destination="@id/dishFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
         <action
             android:id="@+id/action_orderFragment_to_orderInfo"
             app:destination="@id/orderInfo" />
