@@ -13,24 +13,24 @@ import de.unihannover.hci.menudetector.models.DishRepository
 
 private val MOCKED_DISHES: List<Dish> = listOf(
     // Willkommen im Restaurant “Aus aller Welt”
-    DishBuilder("Minestrone", "Example entry", "EUR", 6.49).build(),                        // Class A: One word
-    DishBuilder("Griechischer Salat", "Example entry", "EUR", 3.99).build(),                // Class B: Multiple Words
-    DishBuilder("Flammkuchen Elsässer Art", "Example entry", "EUR", 5.99).build(),
-    DishBuilder("Currywurst", "Example entry", "EUR", 6.96).build(),
-    DishBuilder("Spaghetti Bolognese", "Example entry", "EUR", 7.99).build(),
-    DishBuilder("Schweinshaxe mit Sauerkraut", "Example entry", "EUR", 13.99).build(),
-    DishBuilder("Köfte-Spieß", "Example entry", "EUR", 5.99).build(),                       // Class C: Rare compound word
-    DishBuilder("Wiener Schnitzel", "Example entry", "EUR", 12.49).build(),
-    DishBuilder("Waffeln mit Sahne", "Example entry", "EUR", 5.99).build(),
-    DishBuilder("Tiramisu", "Example entry", "EUR", 3.00).build(),
-    DishBuilder("Crème Brûlée", "Example entry", "EUR", 3.00).build(),                      // Class D: Word(s) with special charatcers
+    DishBuilder("Minestrone", "Example entry", "EUR", 6.49).language("de").build(),                        // Class A: One word
+    DishBuilder("Griechischer Salat", "Example entry", "EUR", 3.99).language("de").build(),                // Class B: Multiple Words
+    DishBuilder("Flammkuchen Elsässer Art", "Example entry", "EUR", 5.99).language("de").build(),
+    DishBuilder("Currywurst", "Example entry", "EUR", 6.96).language("de").build(),
+    DishBuilder("Spaghetti Bolognese", "Example entry", "EUR", 7.99).language("de").build(),
+    DishBuilder("Schweinshaxe mit Sauerkraut", "Example entry", "EUR", 13.99).language("de").build(),
+    DishBuilder("Köfte-Spieß", "Example entry", "EUR", 5.99).language("de").build(),                       // Class C: Rare compound word
+    DishBuilder("Wiener Schnitzel", "Example entry", "EUR", 12.49).language("de").build(),
+    DishBuilder("Waffeln mit Sahne", "Example entry", "EUR", 5.99).language("de").build(),
+    DishBuilder("Tiramisu", "Example entry", "EUR", 3.00).language("de").build(),
+    DishBuilder("Crème Brûlée", "Example entry", "EUR", 3.00).language("de").build(),                      // Class D: Word(s) with special charatcers
 )
 
 class MainActivityViewModel : ViewModel() {
 
     /* ATTRIBUTES */
 
-    private val dishRepository: DishRepository = DishRepository(MOCKED_DISHES)
+    private val dishRepository: DishRepository = DishRepository(listOf())
 
     val menu: List<Dish>
         get() = dishRepository.dishes

@@ -236,7 +236,7 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
                     it.name,
                     currencyService.appCurrency,
                     convertedPrice,
-                ).build()
+                ).language(recognizedMenu.language).build()
             }
         }
     }

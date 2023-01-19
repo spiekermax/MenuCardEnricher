@@ -4,6 +4,7 @@ package de.unihannover.hci.menudetector.fragments
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -43,7 +44,13 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
     private val viewModel by activityViewModels<MainActivityViewModel>()
     lateinit var sharedPreferences: SharedPreferences
     private lateinit var navController: NavController
-    private lateinit var tas: TranslateAndSpeak
+    private val tas: TranslateAndSpeak by lazy {
+        val targetLang = viewModel.order.groupingBy {
+            it.language
+        }.eachCount().maxBy { it.value }.key
+
+        TranslateAndSpeak(Locale(targetLang ?: "en"))
+    }
 
     private val translationService: TranslationService by lazy {
         TranslationService(requireContext(), lifecycle)
@@ -67,7 +74,6 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         val order: List<Dish> = viewModel.order
         val recyclerViewAdapter = RecyclerViewDishAdapter(order, appLanguage = translationService.appLanguage)
         val locales: List<Locale> = Locale.getAvailableLocales().asList().distinctBy { it.language }
-        tas = TranslateAndSpeak(Locale.GERMAN, locales[targetLanguageIndex])
         val sayItButton: MaterialButton = view.findViewById(R.id.button_say_it)
 
 
@@ -125,12 +131,11 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         }
 
         recyclerViewAdapter.sayItListener = {
-            val dishName = it.name
-            tas.speak(requireContext(), dishName)
+            tas.speak(requireContext(), it.originalName)
         }
 
         sayItButton.setOnClickListener {
-            tas.translateAndSpeak(requireContext(), viewModel.order)
+            tas.readOutOrder(requireContext(), viewModel.order)
         }
     }
 

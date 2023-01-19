@@ -106,9 +106,10 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         recyclerViewAdapter.sayItListener = { it ->
             val dishName: CharSequence = it.name
             tts = TextToSpeech(requireContext()) { result ->
+                Locale.US
                 if (result == TextToSpeech.SUCCESS) {
-                    tts.language = Locale.US
-                    tts.speak(dishName, TextToSpeech.QUEUE_ADD, null, null)
+                    tts.language = Locale(it.language ?: "en")
+                    tts.speak(it.originalName, TextToSpeech.QUEUE_ADD, null, null)
                 }
             }
         }
