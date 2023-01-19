@@ -11,14 +11,15 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import de.unihannover.hci.menudetector.R
-import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.models.DishDetails
 import de.unihannover.hci.menudetector.services.TranslationService
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
@@ -56,6 +57,7 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
         StrictMode.setThreadPolicy(policy)  // TODO: Async'
 
         navController = findNavController()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,6 +65,8 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
 
         viewModel.watchDishById(args.dishID).observe(viewLifecycleOwner) {
             if (it == null) throw RuntimeException("Dish may not be null")
+
+            (activity as AppCompatActivity?)!!.supportActionBar!!.title = it.name
 
             if (it.details === null) {
                 view?.findViewById<ProgressBar>(R.id.progressBar)?.setVisibility(View.VISIBLE)
@@ -75,6 +79,7 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
 
             view.findViewById<TextView>(R.id.text_quantity)?.setText(it.quantity.toString())
             view?.findViewById<TextView>(R.id.text_name)?.setText(it.name)
+            view.findViewById<TextView>(R.id.text_original_name)?.text = it.originalName
             view?.findViewById<TextView>(R.id.text_price)
                 ?.setText(
                     formatPrice(
@@ -84,12 +89,16 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
                     )
                 )
 
-            val imageView: ImageView? = view?.findViewById(R.id.image_dish)
-            if (it.details?.bitmap !== null) {
-                imageView?.setImageBitmap(it.details?.bitmap)
-                imageView?.setVisibility(View.VISIBLE)
-            } else {
-                imageView?.setVisibility(View.GONE)
+            CoroutineScope(Dispatchers.Main).launch {
+                val image = view.findViewById<ImageView>(R.id.image_dish) ?: return@launch
+
+                val imageUrl = DetailsRetrieval.fetchImageUrl(it)
+
+                Glide.with(requireContext())
+                    .load(imageUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .centerCrop()
+                    .into(image)
             }
 
             view?.findViewById<TextView>(R.id.text_description)?.setText(it.details?.description)
