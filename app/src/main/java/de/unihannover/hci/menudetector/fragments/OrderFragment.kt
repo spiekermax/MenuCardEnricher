@@ -27,6 +27,7 @@ import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.adapters.RecyclerViewDishAdapter
 import de.unihannover.hci.menudetector.services.TranslateAndSpeak
 import de.unihannover.hci.menudetector.models.Dish
+import de.unihannover.hci.menudetector.services.TranslationService
 import de.unihannover.hci.menudetector.util.formatPrice
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import java.util.*
@@ -44,6 +45,10 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
     private lateinit var navController: NavController
     private lateinit var tas: TranslateAndSpeak
 
+    private val translationService: TranslationService by lazy {
+        TranslationService(requireContext(), lifecycle)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +65,7 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         val targetLanguageIndex = sharedPreferences.getInt("LANGUAGE", 0)
 
         val order: List<Dish> = viewModel.order
-        val recyclerViewAdapter = RecyclerViewDishAdapter(order)
+        val recyclerViewAdapter = RecyclerViewDishAdapter(order, appLanguage = translationService.appLanguage)
         val locales: List<Locale> = Locale.getAvailableLocales().asList().distinctBy { it.language }
         tas = TranslateAndSpeak(Locale.GERMAN, locales[targetLanguageIndex])
         val sayItButton: MaterialButton = view.findViewById(R.id.button_say_it)

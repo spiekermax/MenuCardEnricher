@@ -27,6 +27,7 @@ import com.google.android.material.snackbar.Snackbar
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.adapters.RecyclerViewDishAdapter
 import de.unihannover.hci.menudetector.models.Dish
+import de.unihannover.hci.menudetector.services.TranslationService
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import java.util.*
 
@@ -45,6 +46,10 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
     private lateinit var dishCount: TextView
 
+    private val translationService: TranslationService by lazy {
+        TranslationService(requireContext(), lifecycle)
+    }
+
 
     /* LIFECYCLE */
 
@@ -61,7 +66,11 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         bindViews(view)
 
         val menu: List<Dish> = viewModel.menu
-        val recyclerViewAdapter = RecyclerViewDishAdapter(menu, showImage = true)
+        val recyclerViewAdapter = RecyclerViewDishAdapter(
+            menu,
+            appLanguage = translationService.appLanguage,
+            showImage = true
+        )
 
 
 

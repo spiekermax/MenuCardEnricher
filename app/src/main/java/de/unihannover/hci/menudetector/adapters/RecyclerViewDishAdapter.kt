@@ -24,6 +24,7 @@ import java.util.*
 
 class RecyclerViewDishAdapter(
     dishes: List<Dish> = listOf(),
+    private val appLanguage: String?,
     private val showQuantity: Boolean = true,
     private val isQuantityEditable: Boolean = true,
     private val showImage: Boolean = true,
@@ -156,7 +157,7 @@ class RecyclerViewDishAdapter(
 
         val name = dish.name
         val originalName = dish.originalName
-        val price = formatPrice(dish.price, dish.currency, dish.language)
+        val price = formatPrice(dish.price, dish.currency, appLanguage)
         val quantity = "${dish.quantity}"
 
         viewHolder.titleTextView.text = name

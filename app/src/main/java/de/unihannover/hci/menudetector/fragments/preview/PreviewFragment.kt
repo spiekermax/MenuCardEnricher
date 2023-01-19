@@ -98,6 +98,7 @@ class PreviewFragment : Fragment(R.layout.fragment_preview) {
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
         val recyclerViewAdapter = RecyclerViewDishAdapter(
             menu ?: listOf(),
+            appLanguage = translationService.appLanguage,
             showImage = false,
             showQuantity = false,
             isQuantityEditable = false,

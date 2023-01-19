@@ -3,37 +3,31 @@ package de.unihannover.hci.menudetector.fragments.dish
 // Android
 
 // Internal dependencies
-import android.content.Context
 import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import de.unihannover.hci.menudetector.MainActivity
 import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.models.DishDetails
-import de.unihannover.hci.menudetector.util.formatPrice
+import de.unihannover.hci.menudetector.services.TranslationService
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
+import java.util.*
 
 
 /**
@@ -46,13 +40,14 @@ import kotlinx.coroutines.launch
 class DishFragment : Fragment(R.layout.fragment_dish) {
 
     private lateinit var navController: NavController
-    private lateinit var dish: Dish
-
-    private var currentQuantity: Int = 0
 
     private val viewModel by activityViewModels<MainActivityViewModel>()
 
     private val args: DishFragmentArgs by navArgs()
+
+    private val translationService: TranslationService by lazy {
+        TranslationService(requireContext(), lifecycle)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,21 +61,55 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dish = viewModel.findDishById(args.dishID) ?: throw RuntimeException("Null")
+        viewModel.watchDishById(args.dishID).observe(viewLifecycleOwner) {
+            if (it == null) throw RuntimeException("Dish may not be null")
 
-        currentQuantity = dish.quantity
+            if (it.details === null) {
+                view?.findViewById<ProgressBar>(R.id.progressBar)?.setVisibility(View.VISIBLE)
+                view?.findViewById<View>(R.id.footer)?.visibility = View.GONE
+                return@observe
+            }
 
-        updateViewState()
+            view?.findViewById<ProgressBar>(R.id.progressBar)?.setVisibility(View.GONE)
+            view.findViewById<View>(R.id.footer)?.visibility = View.VISIBLE
 
-        if(dish.details !== null) return
+            view.findViewById<TextView>(R.id.text_quantity)?.setText(it.quantity.toString())
+            view?.findViewById<TextView>(R.id.text_name)?.setText(it.name)
+            view?.findViewById<TextView>(R.id.text_price)
+                ?.setText(
+                    formatPrice(
+                        it.price,
+                        it.currency,
+                        translationService.appLanguage
+                    )
+                )
 
-        CoroutineScope(Dispatchers.Default).launch {
+            val imageView: ImageView? = view?.findViewById(R.id.image_dish)
+            if (it.details?.bitmap !== null) {
+                imageView?.setImageBitmap(it.details?.bitmap)
+                imageView?.setVisibility(View.VISIBLE)
+            } else {
+                imageView?.setVisibility(View.GONE)
+            }
+
+            view?.findViewById<TextView>(R.id.text_description)?.setText(it.details?.description)
+        }
+
+        bindListeners()
+
+        if (viewModel.findDishById(args.dishID)?.details !== null) return
+
+        CoroutineScope(Dispatchers.IO).launch {
             var details: DishDetails?
             try {
-                details = DetailsRetrieval.fetch(dish)
-            } catch(e: Exception) {
+                details = DetailsRetrieval.fetch(viewModel.findDishById(args.dishID)!!)
+            } catch (e: Exception) {
                 MainScope().launch {
-                    Toast.makeText(activity?.applicationContext, "Dish details could not be parsed", Toast.LENGTH_LONG).show()
+                    Snackbar.make(
+                        requireActivity().findViewById<View>(android.R.id.content).rootView,
+                        "Could not find additional dish information",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                     // TODO: Specify error reason (No network, Bad source, ...)
 
                     navController.popBackStack();
@@ -90,49 +119,51 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
             }
 
             MainScope().launch {
+                val dish = viewModel.findDishById(args.dishID) ?: return@launch
                 viewModel.updateDish(
                     dish.copy(details = details)
                 )
-
-                dish = viewModel.menu.find {
-                    it.id == dish.id
-                }!!
-
-                updateViewState()
             }
         }
     }
 
-    private fun updateViewState() {
-        if(dish.details === null) {
-            view?.findViewById<ProgressBar>(R.id.progressBar)?.setVisibility(View.VISIBLE)
-
-            return
-        }
-
-        view?.findViewById<ProgressBar>(R.id.progressBar)?.setVisibility(View.GONE)
-
-        view?.findViewById<TextView>(R.id.text_name)?.setText(dish.name)
-        view?.findViewById<TextView>(R.id.text_price)?.setText(formatPrice(dish.price))    // TODO: Adopt currency
-
-        var addButton: FloatingActionButton? = view?.findViewById(R.id.button_add)
-        addButton?.setOnClickListener(null)
+    private fun bindListeners() {
+        val addButton: ImageButton? = view?.findViewById(R.id.button_increment_count)
         addButton?.setOnClickListener {
-            currentQuantity++
-
-            viewModel.updateDish(dish.copy(quantity = currentQuantity));
+            val dish = viewModel.findDishById(args.dishID) ?: return@setOnClickListener
+            viewModel.updateDish(dish.copy(quantity = dish.quantity + 1));
         }
 
-        val imageView: ImageView? = view?.findViewById(R.id.image_dish)
-        if(dish.details?.bitmap !== null) {
-            imageView?.setImageBitmap(dish.details?.bitmap)
-            imageView?.setVisibility(View.VISIBLE)
+        val removeButton: ImageButton? = view?.findViewById(R.id.button_decrement_count)
+        removeButton?.setOnClickListener {
+            val dish = viewModel.findDishById(args.dishID) ?: return@setOnClickListener
+
+            if (dish.quantity > 0) {
+                viewModel.updateDish(dish.copy(quantity = dish.quantity - 1));
+            } else {
+                Snackbar.make(
+                    requireView(),
+                    "Quantity cannot be lower than zero",
+                    Snackbar.LENGTH_SHORT
+                )
+                    .setAction("Dismiss") {}
+                    .show()
+            }
+        }
+    }
+
+    private fun formatPrice(price: Double, currency: String, language: String?): String {
+        val locale: Locale? = if (language != null) Locale(language) else null
+
+        val formatter = if (locale != null) {
+            NumberFormat.getCurrencyInstance(locale)
         } else {
-            imageView?.setVisibility(View.GONE)
+            NumberFormat.getCurrencyInstance()
         }
 
-        view?.findViewById<TextView>(R.id.text_description)?.setText(dish.details?.description)
-        view?.findViewById<TextView>(R.id.text_weight)?.setText((dish.details?.weight ?: "").toString())
+        formatter.currency = Currency.getInstance(currency)
+
+        return formatter.format(price)
     }
 
 }
