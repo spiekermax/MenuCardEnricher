@@ -28,9 +28,10 @@ import de.unihannover.hci.menudetector.R
 import de.unihannover.hci.menudetector.adapters.RecyclerViewDishAdapter
 import de.unihannover.hci.menudetector.services.TranslateAndSpeak
 import de.unihannover.hci.menudetector.models.Dish
+import de.unihannover.hci.menudetector.services.CurrencyService
 import de.unihannover.hci.menudetector.services.TranslationService
-import de.unihannover.hci.menudetector.util.formatPrice
 import de.unihannover.hci.menudetector.viewmodels.MainActivityViewModel
+import java.text.NumberFormat
 import java.util.*
 
 
@@ -54,6 +55,10 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
     private val translationService: TranslationService by lazy {
         TranslationService(requireContext(), lifecycle)
+    }
+
+    private val currencyService: CurrencyService by lazy {
+        CurrencyService(requireContext())
     }
 
 
@@ -171,6 +176,20 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
         for (dish in viewModel.order) {
             totalSum += (dish.quantity * dish.price)
         }
-        return "Total: " + formatPrice(totalSum)
+        return "Total: " + formatPrice(totalSum, currencyService.appCurrency, translationService.appLanguage)
+    }
+
+    private fun formatPrice(price: Double, currency: String, language: String?): String {
+        val locale: Locale? = if (language != null) Locale(language) else null
+
+        val formatter = if (locale != null) {
+            NumberFormat.getCurrencyInstance(locale)
+        } else {
+            NumberFormat.getCurrencyInstance()
+        }
+
+        formatter.currency = Currency.getInstance(currency)
+
+        return formatter.format(price)
     }
 }
