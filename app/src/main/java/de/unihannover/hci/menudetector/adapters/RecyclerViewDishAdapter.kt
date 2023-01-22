@@ -175,6 +175,8 @@ class RecyclerViewDishAdapter(
         viewHolder.quantityTextView.text = quantity
 
         if (showImage) {
+            viewHolder.previewImageView.setImageResource(R.drawable.placeholder)
+
             CoroutineScope(Dispatchers.Main).launch {
                 val imageUrl = DetailsRetrieval.fetchImageUrl(dish)
 

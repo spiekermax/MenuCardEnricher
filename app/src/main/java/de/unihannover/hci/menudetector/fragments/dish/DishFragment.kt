@@ -111,7 +111,7 @@ class DishFragment : Fragment(R.layout.fragment_dish) {
         CoroutineScope(Dispatchers.IO).launch {
             var details: DishDetails?
             try {
-                details = DetailsRetrieval.fetch(viewModel.findDishById(args.dishID)!!)
+                details = DetailsRetrieval.fetch(requireContext(), lifecycle, viewModel.findDishById(args.dishID)!!)
             } catch (e: Exception) {
                 MainScope().launch {
                     Snackbar.make(

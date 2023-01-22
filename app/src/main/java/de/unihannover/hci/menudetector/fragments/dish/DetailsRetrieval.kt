@@ -1,10 +1,13 @@
 package de.unihannover.hci.menudetector.fragments.dish
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.lifecycle.Lifecycle
 import de.unihannover.hci.menudetector.models.Dish
 import de.unihannover.hci.menudetector.models.DishDetails
+import de.unihannover.hci.menudetector.services.TranslationService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Semaphore
@@ -101,21 +104,33 @@ class DetailsRetrieval {
             return BitmapFactory.decodeStream(`in`)
         }
 
-        fun fetch(dish: Dish): DishDetails? {
+        suspend fun fetch(context: Context, lifecycle: Lifecycle, dish: Dish): DishDetails? {
+            val translationService = TranslationService(context, lifecycle)
+
+            val germanDishName = translationService.translateIntoGerman(dish.originalName, dish.language ?: "en")
+
             var parsedDescription: String
             try {
-                parsedDescription = fetchDescription(dish.name)
+                if (translationService.appLanguage == "de") {
+                    parsedDescription = fetchDescription(germanDishName)
+                } else {
+                    parsedDescription = translationService.translateIntoAppLanguage(fetchDescription(germanDishName), dish.language ?: "en")
+                }
             } catch (e: Exception) {
                 val firstWord: String? = """\s*[^\s_-]+"""
                     .toRegex()
-                    .find(dish.name)
+                    .find(germanDishName)
                     ?.value
 
                 if (firstWord === null) {
                     throw e
                 }
 
-                parsedDescription = fetchDescription(firstWord)
+                if (translationService.appLanguage == "de") {
+                    parsedDescription = fetchDescription(firstWord)
+                } else {
+                    parsedDescription = translationService.translateIntoAppLanguage(fetchDescription(firstWord), dish.language ?: "en")
+                }
             }
 
             var parsedBitmap: Bitmap? = null

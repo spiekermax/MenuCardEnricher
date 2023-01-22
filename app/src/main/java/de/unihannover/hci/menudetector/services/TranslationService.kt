@@ -66,8 +66,8 @@ class TranslationService(val context: Context, private val lifecycle: Lifecycle)
         return translate(text, sourceLanguage, appLanguage)
     }
 
-    suspend fun translateIntoEnglish(text: String, sourceLanguage: String): String {
-        return translate(text, sourceLanguage, TranslateLanguage.ENGLISH)
+    suspend fun translateIntoGerman(text: String, sourceLanguage: String): String {
+        return translate(text, sourceLanguage, TranslateLanguage.GERMAN)
     }
 
     private suspend fun translate(
